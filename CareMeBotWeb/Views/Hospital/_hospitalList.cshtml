@@ -1,0 +1,87 @@
+﻿@model IEnumerable<Data.ViewModels.HospitalSchedules>
+
+
+@foreach (var item in Model)
+{
+    <div class="panel-custom-default">
+        <div class="row">
+            <div class="col-xs-12">
+                <img src="https://image.freepik.com/free-vector/hospitals-with-staff-specialist-doctors_18591-3545.jpg"
+                     style="width:100%; height:150px;object-fit:cover;border-top-left-radius:10px;border-top-right-radius:10px" />
+            </div>
+            <div class="clearfix"></div>
+            <div class="pa-10">
+                <div class="col-xs-12">
+                    <h4 class="lh10 zawgyi_text"><i class="icon-office"></i> @item.tbHospital.Name_ZG</h4>
+                    <span class="zawgyi_text text-muted lh10"><i class="icon-location3"></i> @item.tbHospital.Address_ZG, @item.tbHospital.Township_ZG, @item.tbHospital.State_ZG </span><br />
+                    
+                </div>
+
+                <div class="clearfix"></div>
+
+                <div class="col-xs-12 hs_show"  id="div_hs_show_@item.tbHospital.ID">
+                    <button class="btn btn-danger btn-rounded btn-block m-5" data-hospitalid="@item.tbHospital.ID" onclick="showSchedules(this)">View Schedules</button>
+                </div>
+
+                <div class="col-xs-12 hs_hide hidden" id="div_hs_hide_@item.tbHospital.ID">
+                    <hr class="m-5" />
+
+                    <div class="col-xs-12">
+                        <h4 class="lh10 zawgyi_text">Schedules</h4>
+                        <small>Select schedules to make a booking</small>
+                        @{ 
+                            List<DateTime> datelist = new List<DateTime>();
+                            foreach(var dd in item.scheduleDataList)
+                            {
+                                datelist.Add(dd.AppointmentDatetime.Value.Date);
+                            }
+                            datelist = datelist.Distinct().ToList();
+
+                        }
+                        @foreach (var date in datelist)
+                        {
+                            <h5>
+                                <img width="30" height="30" src="data:image/svg+xml;utf8;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/Pgo8IS0tIEdlbmVyYXRvcjogQWRvYmUgSWxsdXN0cmF0b3IgMTYuMC4wLCBTVkcgRXhwb3J0IFBsdWctSW4gLiBTVkcgVmVyc2lvbjogNi4wMCBCdWlsZCAwKSAgLS0+CjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+CjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgdmVyc2lvbj0iMS4xIiBpZD0iQ2FwYV8xIiB4PSIwcHgiIHk9IjBweCIgd2lkdGg9IjY0cHgiIGhlaWdodD0iNjRweCIgdmlld0JveD0iMCAwIDQ4NS4yMTMgNDg1LjIxMiIgc3R5bGU9ImVuYWJsZS1iYWNrZ3JvdW5kOm5ldyAwIDAgNDg1LjIxMyA0ODUuMjEyOyIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSI+CjxnPgoJPHBhdGggZD0iTTYwLjY1Miw3NS44MTZWMTUuMTYzQzYwLjY1Miw2Ljc4MSw2Ny40MzMsMCw3NS44MTcsMGM4LjM4LDAsMTUuMTYxLDYuNzgxLDE1LjE2MSwxNS4xNjN2NjAuNjUzICAgYzAsOC4zOC02Ljc4MSwxNS4xNjEtMTUuMTYxLDE1LjE2MUM2Ny40MzMsOTAuOTc4LDYwLjY1Miw4NC4xOTYsNjAuNjUyLDc1LjgxNnogTTMxOC40MjQsOTAuOTc4ICAgYzguMzc4LDAsMTUuMTYzLTYuNzgxLDE1LjE2My0xNS4xNjFWMTUuMTYzQzMzMy41ODcsNi43ODEsMzI2LjgwMiwwLDMxOC40MjQsMGMtOC4zODIsMC0xNS4xNjgsNi43ODEtMTUuMTY4LDE1LjE2M3Y2MC42NTMgICBDMzAzLjI1Niw4NC4xOTYsMzEwLjA0Miw5MC45NzgsMzE4LjQyNCw5MC45Nzh6IE00ODUuMjEyLDM2My45MDZjMCw2Ni45OTYtNTQuMzEyLDEyMS4zMDctMTIxLjMwMywxMjEuMzA3ICAgYy02Ni45ODYsMC0xMjEuMzAyLTU0LjMxMS0xMjEuMzAyLTEyMS4zMDdjMC02Ni45ODYsNTQuMzE1LTEyMS4zLDEyMS4zMDItMTIxLjNDNDMwLjksMjQyLjYwNiw0ODUuMjEyLDI5Ni45MTksNDg1LjIxMiwzNjMuOTA2eiAgICBNNDU0Ljg5LDM2My45MDZjMC01MC4xNjEtNDAuODEtOTAuOTc2LTkwLjk4LTkwLjk3NmMtNTAuMTY2LDAtOTAuOTc2LDQwLjgxNC05MC45NzYsOTAuOTc2YzAsNTAuMTcxLDQwLjgxLDkwLjk4LDkwLjk3Niw5MC45OCAgIEM0MTQuMDgsNDU0Ljg4Niw0NTQuODksNDE0LjA3Nyw0NTQuODksMzYzLjkwNnogTTEyMS4zMDUsMTgxLjk1NUg2MC42NTJ2NjAuNjUxaDYwLjY1M1YxODEuOTU1eiBNNjAuNjUyLDMzMy41ODRoNjAuNjUzVjI3Mi45MyAgIEg2MC42NTJWMzMzLjU4NHogTTE1MS42MjksMjQyLjYwNmg2MC42NTR2LTYwLjY1MWgtNjAuNjU0VjI0Mi42MDZ6IE0xNTEuNjI5LDMzMy41ODRoNjAuNjU0VjI3Mi45M2gtNjAuNjU0VjMzMy41ODR6ICAgIE0zMC4zMjgsMzYwLjg5MVYxNTEuNjI4aDMzMy41ODJ2NjAuNjUzaDMwLjMyN1Y5NGMwLTE4LjQyMS0xNC42OTItMzMuMzQ5LTMyLjg0My0zMy4zNDloLTEyLjY0N3YxNS4xNjYgICBjMCwxNi43MDEtMTMuNTk2LDMwLjMyNS0zMC4zMjIsMzAuMzI1Yy0xNi43MzEsMC0zMC4zMjYtMTMuNjI0LTMwLjMyNi0zMC4zMjVWNjAuNjUxSDEwNi4xNHYxNS4xNjYgICBjMCwxNi43MDEtMTMuNTkzLDMwLjMyNS0zMC4zMjIsMzAuMzI1Yy0xNi43MzMsMC0zMC4zMjctMTMuNjI0LTMwLjMyNy0zMC4zMjVWNjAuNjUxSDMyLjg1OUMxNC43MDcsNjAuNjUxLDAuMDAxLDc1LjU3OSwwLjAwMSw5NCAgIHYyNjYuODkyYzAsMTguMzYsMTQuNzA2LDMzLjM0NiwzMi44NTgsMzMuMzQ2aDE3OS40MjR2LTMwLjMzMUgzMi44NTlDMzEuNDg1LDM2My45MDYsMzAuMzI4LDM2Mi40ODcsMzAuMzI4LDM2MC44OTF6ICAgIE0zMDMuMjU2LDI0Mi42MDZ2LTYwLjY1MWgtNjAuNjQ4djYwLjY1MUgzMDMuMjU2eiBNNDA5LjM5OSwzNjMuOTA2aC00NS40OXYtNDUuNDljMC04LjM3Ny02Ljc4MS0xNS4xNTgtMTUuMTYzLTE1LjE1OCAgIHMtMTUuMTU5LDYuNzgxLTE1LjE1OSwxNS4xNTh2NjAuNjU4YzAsOC4zNzgsNi43NzcsMTUuMTYzLDE1LjE1OSwxNS4xNjNoNjAuNjUzYzguMzgyLDAsMTUuMTYzLTYuNzg1LDE1LjE2My0xNS4xNjMgICBDNDI0LjU2MiwzNzAuNjkyLDQxNy43ODEsMzYzLjkwNiw0MDkuMzk5LDM2My45MDZ6IiBmaWxsPSIjMDAwMDAwIi8+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPC9zdmc+Cg==" />
+
+                                <span class="text-success-700">@date.ToString("dd MMM yyyy")</span><span class="text-success-700"> <span class="pull-right badge badge-success fs12">@date.ToString("ddd")</span></span>
+                            </h5>
+                            foreach (var time in item.scheduleDataList.Where(a => a.AppointmentDatetime >= date && a.AppointmentDatetime <= date.AddDays(1)))
+                            {
+
+
+                                <div class="col-xs-6">
+                                    <button class="btn btn-danger btn-rounded btn-block datebtns" 
+                                            data-doctorid="@time.DoctorID"
+                                             data-doctorname="@time.DoctorName"
+                                             data-appdate="@time.AppointmentDatetime"
+                                             data-fromtime="@time.Fromtime"
+                                             data-totime="@time.Totime"
+                                             data-scheduleid="@time.ID"
+                                            data-date="@date.ToString("dd_MMM_yyyy")"
+                                            data-hospitalid="@item.tbHospital.ID"
+                                            data-displaydate ="@date.ToString("dd MMM yyyy")"
+                                            data-displaytime="@time.Fromtime.Value.ToShortTimeString() - @time.Totime.Value.ToShortTimeString()"
+
+                                            onclick="makebooking(this)">
+                                    @time.Fromtime.Value.ToShortTimeString() - @time.Totime.Value.ToShortTimeString() 
+                                   
+                                    </button>
+                                </div>
+                            }
+                            <div class="clearfix"></div>
+                            <div class="pform" id="pform_@date.ToString("dd_MMM_yyyy")"></div>
+                            <hr class="m-10" />
+                            <div class="clearfix"></div>
+                        }
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <br />
+    </div>
+   
+
+    <div class="clearfix"></div><br />
+}

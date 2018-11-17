@@ -1,0 +1,106 @@
+﻿@model Data.Models.tbScheduleData
+
+@using (Html.BeginForm("UpSertDoctor", "Doctor", FormMethod.Post, new { id = "ScheduleForm" }))
+{
+    <div class="modal-header bg-blue">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+        <h4 class="modal-title">
+            <img src="https://portalvhdslvb28rs1c3tmc.blob.core.windows.net/yammo/careme/iconpack/icon_schedule.png" width="40" height="40" />&nbsp;&nbsp;Add New Schedule
+        </h4>
+    </div>
+
+    <div class="modal-body" id="mb">
+        <div class="row">
+            <div class='col-sm-12'>
+                <label class="h4 zawgyi_text">Hospital or Clinic Name : @Model.HospitalName</label><br />
+                <label class="h4 zawgyi_text">@Model.DoctorName</label>
+               
+                <input type="hidden" name="HospitalID" value="@Model.HospitalID" />
+                <input type="hidden" name="HospitalName" value="@Model.HospitalName" />
+                <input type="hidden" name="DoctorID" value="@Model.DoctorID" />
+                <input type="hidden" name="DoctorName" value="@Model.DoctorName" />
+            </div>
+          </div>  
+        <hr />
+         
+
+            <div class="row">
+                <div class='col-sm-12'>
+                    <label class="h4">Date</label>
+                    <div class="input-group">
+                        @if (Model.AppointmentDatetime != null)
+                        {
+                            <input type="text" class="form-control daterange-single_form" id="datepicker" name="AppointmentDatetime" value="@Model.AppointmentDatetime.Value.ToShortDateString()" autocomplete="off">
+                            <span class="input-group-addon"><i class="icon-calendar22"></i></span>
+
+                        }
+                        else
+                        {
+                            <input type="text" class="form-control daterange-single_form" id="datepicker" name="AppointmentDatetime" value="" autocomplete="off">
+                            <span class="input-group-addon"><i class="icon-calendar22"></i></span>
+                        }
+                      
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class='col-sm-6'>
+                    <label class="h4">From Time</label>
+                    <div class="input-group">
+                        @if (Model.Fromtime != null)
+                        {
+                            <input type="text" class="form-control" id="fromtimepicker1" name="Fromtime" value="@Model.Fromtime.Value.ToShortTimeString()" autocomplete="off">
+
+                        }
+                        else
+                        {
+                            <input type="text" class="form-control" id="fromtimepicker1" name="Fromtime" autocomplete="off" >
+
+                        }
+                      
+                         <span class="input-group-addon"><i class="icon-calendar22"></i></span>
+                    </div>
+                </div>
+
+                <div class='col-sm-6'>
+                    <label class="h4">To Time</label>
+                    <div class="input-group">
+                        @if (Model.Totime != null)
+                        {
+                            <input type="text" class="form-control" id="totimepicker1" name="ToTime" value="@Model.Totime.Value.ToShortTimeString()" autocomplete="off">
+
+                        }
+                        else
+                        {
+                            <input type="text" class="form-control" id="totimepicker1" name="ToTime" autocomplete="off">
+
+                        }
+                      
+                           <span class="input-group-addon"><i class="icon-calendar22"></i></span>
+                    </div>
+                </div>
+            </div>
+
+            <br />
+
+        </div>
+
+        @Html.HiddenFor(m => m.ID)
+        @Html.HiddenFor(m => m.IsDeleted)
+        @Html.HiddenFor(m => m.Accesstime)
+
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default btn-rounded" data-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary btn-rounded" id=""><span class="icon-add"></span> Save</button>
+                    </div>
+                    }
+
+
+@*@section scripts{
+    <script>
+        
+    </script>
+     
+    }*@

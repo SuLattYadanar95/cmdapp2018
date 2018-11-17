@@ -1,0 +1,414 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="mt-20">
+    <div class="navbar  navbar-component fs14" style="position: relative; z-index: 18;margin-bottom:0px!important">
+        <div >
+            <div class="col-md-3 pa-0 " style="float:left">
+                <h3 class="lh10 mt-5">Doctor Schedule</h3>
+                <small>Manage doctor schedules</small>
+                <button class="btn btn-primary btn-xs btn-rounded" onclick="generateSchedule()">Generate Schedule</button>
+            </div>
+
+            <div class="col-md-3" style="float:right">
+                <div class="form-group">
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Search for..." name="q" id="txt_Name" autocomplete="off">
+                       
+                        <span class="input-group-btn"> 
+                            <button class="btn btn-default" style="margin-left:5px;border-radius:7px" type="button" onclick="Search()">Search</button>
+                        </span>
+                    </div><!-- /input-group -->
+
+                </div>
+            </div>
+
+           
+
+            <div class="col-md-3" style="float:right">
+
+                <div class="input-group">
+                    <input type="text" class="form-control daterange-single" value="" id="todatepicker">
+                    <span class="input-group-addon"><i class="icon-calendar22"></i></span>
+
+                </div>
+                </div>
+
+            <div class="col-md-3" style="float:right">
+
+                <div class="input-group">
+                    <input type="text" class="form-control daterange-single" value="" id="fromdatepicker">
+                    <span class="input-group-addon"><i class="icon-calendar22"></i></span>
+
+                </div>
+            </div>
+
+              
+                @*<div class="col-md-2"  style="margin-left:10px">
+                    <div class="input-group">
+                        <button class="btn btn-primary btn-xs btn-rounded" onclick="generateSchedule()">Generate Schedule</button>&nbsp;
+                    </div>
+                </div>*@
+            </div>
+
+    </div>
+</div>
+
+<div class="modal fade" id="myModalGenerateSchedule" tabindex="-1" role="dialog" aria-labelledby="myModal-label" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div id="GenerateSchedule">
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModal-label" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div id="Schedule">
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="_List">
+    <div id="loading" style="text-align:center">
+        <img src="~/Content/Image/Spinner-1s-200px.gif" width="200" height="200" />
+    </div>
+</div>
+
+@section scripts{
+    <script>
+       var docname; var fromdate; var todate;var id;
+
+        $(function () {
+            MainList();
+            initPaging();
+           
+        });
+
+        var hospitalid;
+        var pagesize = 8;
+        var page = 1;
+
+      
+        function initPaging() {
+            $("#_List").on("click", ".pagedList a", function (e) {
+                e.preventDefault();
+                var $a = $(this).attr("href");
+                try {
+                    var pageurl = $a.split(/=/);
+                    page = pageurl[1];
+                    if (page == null) {
+                        page = 1;
+                    }
+                }
+                catch (e) {
+                    page = 1;
+                }
+                MainList();
+            });
+        }
+
+
+        function Search() {
+            docname = $('#txt_Name').val();
+            fromdate = $('#fromdatepicker').val();
+            todate = $('#todatepicker').val();
+            MainList();
+        }
+
+        function MainList() {
+            $('#loading').show();
+            $.ajax({
+                cache: false,
+                url: '@Url.Action("_list", "DoctorScheduleDetail")',
+                data: { id:id,docname: docname, fromdate: fromdate, todate: todate,pagesize : pagesize, page:page },
+                beforeSend: function () {
+
+                },
+                success: function (result) {
+                    $('#_List').empty().append(result);
+                },
+                complete: function () {
+                    $('#loading').hide();
+                  
+                }
+            });
+        }
+
+        function prev(e) {
+            var docid = $(e).attr('data-docid');
+            var appDate = $(e).attr('data-appdate');
+            $.ajax({
+                cache: false,
+                url: '@Url.Action("_nextschedule", "DoctorScheduleDetail")',
+                data: { docid: docid, hospitalid: hospitalid,appDate : appDate, Type:"prev" },
+                beforeSend: function () {
+
+                },
+                success: function (result) {
+                    $("#doc_schedule_" + docid).empty().append(result);
+                },
+                complete: function () {
+
+                }
+            });
+        }
+        function next(e) {
+            var docid = $(e).attr('data-docid');
+            var appDate = $(e).attr('data-appdate');
+            $.ajax({
+                cache: false,
+                url: '@Url.Action("_nextschedule", "DoctorScheduleDetail")',
+                data: { docid: docid, hospitalid: hospitalid, appDate: appDate, Type: "next" },
+                beforeSend: function () {
+
+                },
+                success: function (result) {
+                    $("#doc_schedule_" + docid).empty().append(result);
+                },
+                complete: function () {
+
+                }
+            });
+        }
+
+        $('#fromdatepicker').daterangepicker({
+            singleDatePicker: true,
+        });
+
+        $('#todatepicker').daterangepicker({
+            singleDatePicker: true,
+        });
+
+        function bindDoctorDD() {
+            $.ajax({
+                cache: false,
+                url: '@Url.Action("getdoctorlistbyhospital", "DoctorScheduleDetail")',
+                data: { hospitalID: 0 },
+                beforeSend: function () {
+
+                },
+                success: function (result) {
+                    $('#DDD_Doctor').empty();
+                    $('#DDD_Doctor').append('<option value="0">-------Select-------</option>');
+                    for (var i = 0; i < result.length; i++) {
+                        $('#DDD_Doctor').append('<option value="' + result[i].DoctorID + '" class="zawgyi_text">' + result[i].DoctorName + '</option>')
+                    };
+                    $('#DDD_Doctor').on('change', function () {
+                        var id = document.getElementById("DDD_Doctor").value;
+
+                        bindschedulelist(id);
+                    });
+                },
+                complete: function () {
+
+                }
+            });
+        }
+
+
+        function bindschedulelist(id) {
+            $.ajax({
+                cache: false,
+                url: '@Url.Action("getgenerateschedulelist", "DoctorScheduleDetail")',
+                data: { id: id },
+                beforeSend: function () {
+
+                },
+                success: function (result) {
+                    $('#generateSchedule').empty().append(result);
+                },
+                complete: function () {
+
+                }
+            });
+        }
+
+        function generateSchedule() {
+            generateScheduleForm("Add", 0);
+        }
+
+
+
+        //function EditDoctor(e) {
+        //    var ID = $(e).attr('data-ID');
+        //    DoctorForm("Edit", ID);
+        //}
+
+        function generateScheduleForm(FormType, ID) {
+            $.ajax({
+                cache: false,
+                url: '@Url.Action("_GenerateScheduleForm", "DoctorScheduleDetail")',
+                data: { FormType: FormType, ID: ID },
+                beforeSend: function () {
+
+                },
+                success: function (myData) {
+                    $('#GenerateSchedule').empty().append(myData);
+                },
+                complete: function () {
+                    $('#myModalGenerateSchedule').modal('show');
+
+
+                    //    $('#fromdatepicker').ptTimeSelect();
+
+                    //    $('#todatepicker').ptTimeSelect();
+                    $('#fromdatepickerscheduleform').daterangepicker({
+                        singleDatePicker: true
+                    });
+
+                    $('#todatepickerscheduleform').daterangepicker({
+                        singleDatePicker: true
+                    });
+                    bindDoctorDD();
+
+                    $('#GenerateScheduleForm').submit(function (e) {
+                        var fromdatepicker = $('#fromdatepickerscheduleform').val();
+                        var todatepicker = $('#todatepickerscheduleform').val();
+                        var doctorid = document.getElementById("DDD_Doctor").value;
+                        // var id = document.getElementById("DDD_Doctor").value;
+                        //var hospitalid = $('#hospitalid').val();
+                        //var hospitalname = $('#hospitalname').val();
+                        e.preventDefault();
+                        $.ajax({
+                            cache: false,
+                            url: '@Url.Action("UpSertGenerateSchedule", "DoctorScheduleDetail")',
+                            data: { fromdatepicker: fromdatepicker, todatepicker: todatepicker, doctorid: doctorid },
+                            beforeSend: function () {
+                                $('.btn').prop("disabled", true);
+                            },
+                            success: function (result) {
+                                $('#myModalGenerateSchedule').modal('hide');
+                                MainList();
+
+                            },
+                            complete: function (result) {
+                                $('.btn').prop("disabled", false);
+
+
+                            }
+                        });
+                    });
+
+                }
+
+
+
+
+
+            });
+
+        }
+
+
+
+        function addSchedule(e) {
+            var docid = $(e).attr('data-doctorid');
+            var hosid = $(e).attr('data-hospitalid');
+            var docname = $(e).attr('data-doctorname');
+            var hosname = $(e).attr('data-hospitalname');
+            ScheduleForm("Add", 0, docname, hosname, docid, hosid);
+        }
+
+
+
+        function editSchedule(e) {
+            var docid = $(e).attr('data-doctorid');
+            var hosid = $(e).attr('data-hospitalid');
+            var docname = $(e).attr('data-doctorname');
+            var hosname = $(e).attr('data-hospitalname');
+            var ID = $(e).attr('data-scheduleID');
+            ScheduleForm("Edit", ID, docname, hosname, docid, hosid);
+        }
+
+        function ScheduleForm(FormType, ID, docname, hosname, docid, hosid) {
+            $.ajax({
+                cache: false,
+                url: '@Url.Action("_ScheduleForm", "DoctorScheduleDetail")',
+                data: { FormType: FormType, ID: ID, docname: docname, hosname: hosname, docid: docid, hosid: hosid },
+                beforeSend: function () {
+
+                },
+                success: function (myData) {
+                    $('#Schedule').empty().append(myData);
+                },
+                complete: function () {
+                    $('#myModal').modal('show');
+                    $('.daterange-single_form').daterangepicker({
+                        singleDatePicker: true
+                    });
+
+                    $('#fromtimepicker1').ptTimeSelect();
+
+                    $('#totimepicker1').ptTimeSelect();
+
+
+
+                    $('#ScheduleForm').submit(function (e) {
+                        var doctorid = $('#doctorid').val();
+                        e.preventDefault();
+                        $.ajax({
+                            cache: false,
+                            url: '@Url.Action("UpSertSchedule", "DoctorScheduleDetail")',
+                            type: "Post",
+                            data: $(this).serialize(),
+                            beforeSend: function () {
+                                $('.btn').prop("disabled", true);
+                            },
+                            success: function (myData) {
+                                $('#myModal').modal('hide');
+                                MainList();
+                            },
+                            complete: function () {
+                                $('.btn').prop("disabled", false);
+
+                            }
+                        });
+                    });
+
+                }
+
+
+
+
+
+            });
+
+        }
+
+        function scheduledetaildelete(e) {
+            var ID = $(e).attr('data-scheduleid');
+            $.ajax({
+                cache: false,
+                url: '@Url.Action("scheduledetaildelete", "DoctorScheduleDetail")',
+                data: { ID: ID },
+                beforeSend: function () {
+
+                },
+                success: function (myData) {
+                    $('#deletescheduleby_' + ID).remove();
+                  //  $('#noschedulelist').empty().append('<div class="m-5 panel-custom-default pa-10" style="background-color:#fcfcfc!important"><div class="row"><div class="col-xs-12"><h4 style="text-align:center">There is no schedule list</h4></div></div></div><div class="clearfix"></div>');
+                },
+                complete: function () {
+                    MainList();
+                }
+
+
+
+
+
+            });
+        }
+
+     
+
+    </script>
+
+}
+

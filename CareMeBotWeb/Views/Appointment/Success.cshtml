@@ -1,0 +1,70 @@
+﻿
+@{
+    ViewBag.Title = "Success";
+}
+@section css{
+    <style>
+        .circle-loader {
+  margin-bottom: 1.5em;
+  border: 2px solid rgba(0, 0, 0, 0.2);
+  border-left-color: #5cb85c;
+  animation: loader-spin 1.2s infinite linear;
+  position: relative;
+  display: inline-block;
+  vertical-align: top;
+  border-radius: 50%;
+  width: 11em;
+  height: 11em;
+}
+
+.load-complete {
+  -webkit-animation: none;
+  animation: none;
+  border-color: #5cb85c;
+  transition: border 500ms ease-out;
+}
+    
+@@keyframes loader-spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+    </style>
+   
+
+
+    }
+
+@*<div class="col-md-4 col-md-offset-4 col-xs-12 pa-0">
+    <h2 class="text-green-700"><i class="icon-checkmark"></i> Booking Successful</h2>
+    <small>You have successfully booked an appointment</small>
+
+    <br /><br />
+    <a href="/booking/list" class="btn btn-primary btn-rounded">View your bookings</a>
+</div>*@
+
+<div class="col-md-4 col-md-offset-4 col-xs-12 text-center pa-0">
+    <h2>Asia Royal</h2>
+    <img width="60" height="60" class="img-circle" src="https://kktstroage.azureedge.net/yammo/careme/default_doctor_photo.jpg"/>
+    <h4 class="mb-0">Dr.Zaw Than Htun</h4>
+    <span>M.B.S.S</span>
+    <br /><br />
+    <div class="circle-loader load-complete p-10">
+        <h5 class="lh15 ">07:30 PM</h5>
+        <h4 class="lh15 ">17 Nov 2018</h4>
+        <hr class="m-5" />
+        <h6 class="lh10">Booking No</h6>
+        <h2 class="lh10 text-bold">100</h2>
+    </div>
+   
+    <h5 class="lh15">Active</h5>
+    <h5 class="lh20">2:hr 40:mins approximately to see doctor</h5>
+    <h4 class="lh15"><span class="text-primary-300">43 has</span> been called</h4>
+    <hr />
+    <h5>Important Note</h5>
+    <h6>Time mentioned above is estimated based on schedule set by doctor and updated in realtime 
+    please note that it may be changed for some reasons and we suggest you to come to hospital ??? ahead</h6>
+</div>

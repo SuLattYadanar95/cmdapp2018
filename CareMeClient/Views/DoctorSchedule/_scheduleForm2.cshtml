@@ -1,0 +1,127 @@
+﻿@model Data.Models.tbSchedule
+
+
+@using (Html.BeginForm("UpSertDoctor", "Doctor", FormMethod.Post, new { id = "ScheduleForm2" }))
+{
+    <div class="modal-header bg-blue">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+        <h4 class="modal-title">
+            <img src="~/Content/Image/" width="40" height="40" style="border-radius:20px" />&nbsp;&nbsp; Add New Schedule
+        </h4>
+    </div>
+
+    <div class="modal-body" id="mb">
+        <div class="row">
+            <div class="col-sm-12">
+                <label class="h4 zawgyi_text">Hospital or Clinic Name : @Model.HospitalName</label><br />
+                <label class="h4 zawgyi_text">@Model.DoctorName</label>
+
+                <input type="hidden" name="HospitalID" value="@Model.HospitalID" />
+                <input type="hidden" name="HospitalName" value="@Model.HospitalName" />
+                <input type="hidden" name="DoctorID" value="@Model.DoctorID" />
+                <input type="hidden" name="DoctorName" value="@Model.DoctorName" />
+            </div>
+            </div>
+        <hr />
+        @*<div class="row" style="padding: 0px 20px;margin-top:0px!important;margin-bottom:0px!important">
+           
+        </div>
+        <hr />*@
+
+        <div class="row">
+            <div class='col-sm-12'>
+                <div class="round">                   
+                    <span class="h4 lh15 text-muted" style="color:#080000">Day : </span>
+                    @*<input type="checkbox" value="true" name="item.IsPromoted" checked="@Model.item.IsPromoted" />
+                    <input type="hidden" value="false" name="item.IsPromoted" />*@
+                    <input type="checkbox" id="checkbox7" value="true" name="IsSunday" checked="@Model.IsSunday" />
+                    <label for="checkbox7">S</label>
+                    <input type="checkbox" class="round ml-5" id="checkbox1" value="true" name="IsMonday" checked="@Model.IsMonday" />
+                    <label for="checkbox1">M</label>
+                    <input type="checkbox" class="round ml-5" id="checkbox2" value="true" name="IsTuesday" checked="@Model.IsTuesday" />
+                    <label for="checkbox2">T</label>
+                    <input type="checkbox" class="round ml-5" id="checkbox3" value="true" name="IsWednesday" checked="@Model.IsWednesday" />
+                    <label for="checkbox3">W</label>
+                    <input type="checkbox" class="round ml-5" id="checkbox4" value="true" name="IsThursday" checked="@Model.IsThursday" />
+                    <label for="checkbox4">T</label>
+                    <input type="checkbox" class="round ml-5" id="checkbox5" value="true" name="IsFriday" checked="@Model.IsFriday" />
+                    <label for="checkbox5">F</label>
+                    <input type="checkbox" class="round ml-5" id="checkbox6" value="true" name="IsSaturday" checked="@Model.IsSaturday" />
+                    <label for="checkbox6">S</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class='col-sm-4'>
+                <label class="h4">From Time</label>
+                <div class="input-group">
+
+                    @if (Model.Fromtime != null)
+                    {
+                        <input type="text" class="form-control" id="timepicker1" name="Fromtime" value="@Model.Fromtime.Value.ToShortTimeString()" autocomplete="off">
+
+                    }
+                    else
+                    {
+                        <input type="text" class="form-control" id="timepicker1" name="Fromtime" autocomplete="off">
+
+                    }
+
+
+                    <span class="input-group-addon"><i class="icon-alarm"></i></span>
+                </div>
+            </div>
+
+            <div class='col-sm-4'>
+                <label class="h4">To Time</label>
+                <div class="input-group">
+
+                    @if (@Model.Totime != null)
+                    {
+                        <input type="text" class="form-control" id="timepicker2" name="ToTime" value="@Model.Totime.Value.ToShortTimeString()" autocomplete="off">
+
+                    }
+                    else
+                    {
+                        <input type="text" class="form-control" id="timepicker2" name="ToTime" autocomplete="off">
+
+                    }
+
+
+                    <span class="input-group-addon"><i class="icon-alarm"></i></span>
+                </div>
+            </div>
+
+            <div class='col-sm-4'>
+                <label class="h4">Patient Amount</label>
+                <div class="input-group">
+                    <input value="@Model.PatientLimit"  type="number" class="form-control"  name="PatientLimit" autocomplete="off">
+
+                    <span class="input-group-addon"><i class="icon-alarm"></i></span>
+                </div>
+            </div>
+        </div>
+     
+        <br />
+        
+        </div>
+
+        @Html.HiddenFor(m => m.ID)
+        @Html.HiddenFor(m => m.IsDeleted)
+        @Html.HiddenFor(m => m.Accesstime)
+
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default btn-rounded" data-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary btn-rounded" id=""><span class="icon-add"></span> Save</button>
+                    </div>
+                    }
+
+
+@section scripts{
+    <script>
+        
+    </script>
+     
+    }

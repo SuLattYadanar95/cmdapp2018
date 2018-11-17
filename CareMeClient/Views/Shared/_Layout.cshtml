@@ -1,0 +1,223 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CareME</title>
+    @*<link href="https://fonts.googleapis.com/css?family=Roboto:400,300,100,500,700,900" rel="stylesheet" type="text/css">*@
+
+    <link href="~/Content/styles.css" rel="stylesheet" />
+    <link href="~/Content/sweetalert.css" rel="stylesheet" />
+    <link href="~/themes/assets/css/icons/icomoon/styles.css" rel="stylesheet" type="text/css">
+    <link href="~/themes/assets/css/bootstrap.css" rel="stylesheet" type="text/css">
+    <link href="~/themes/assets/css/core.css" rel="stylesheet" type="text/css">
+    <link href="~/themes/assets/css/components.css" rel="stylesheet" type="text/css">
+    <link href="~/themes/assets/css/colors.css" rel="stylesheet" type="text/css">
+    <link href="~/Content/custom.css" rel="stylesheet" />
+    <link href="~/Content/animate.css" rel="stylesheet" />
+    <link href="~/Content/vivify.min.css" rel="stylesheet" />
+
+    <link href="~/Content/style.css" rel="stylesheet" />
+
+
+    <link href="~/Content/timepicker/jquery-ui.css.css" rel="stylesheet" />
+
+    <link href="~/Content/timepicker/jquery.ptTimeSelect.css" rel="stylesheet" />
+
+
+
+
+
+   
+
+
+
+    @RenderSection("head", false)
+    @RenderSection("css", required: false)
+</head>
+
+<body class="sidebar-xs-indicator">
+
+    <!-- Main navbar -->
+    <div class="navbar navbar-inverse">
+        <div class="navbar-header">
+          
+            <a class="navbar-brand" href="~/Home/Index"><span class="zawgyi_text">@CareMeClient.Helper.CookieHelper.getstaffHospitalName()</span></a>
+
+            <ul class="nav navbar-nav pull-right visible-xs-block">
+                <li><a data-toggle="collapse" data-target="#navbar-mobile"><i class="icon-tree5"></i></a></li>
+                <li><a class="sidebar-mobile-main-toggle"><i class="icon-paragraph-justify3"></i></a></li>
+            </ul>
+        </div>
+
+        <div class="navbar-collapse collapse" id="navbar-mobile">
+            <ul class="nav navbar-nav">
+                <li><a class="sidebar-control sidebar-main-toggle hidden-xs"><i class="icon-paragraph-justify3"></i></a></li>
+            </ul>
+
+            <ul class="nav navbar-nav navbar-right">
+                <li class="dropdown dropdown-user">
+                    <a class="dropdown-toggle" data-toggle="dropdown">
+                        @{
+                            var staffname = CareMeClient.Helper.CookieHelper.getstaffName();
+                        }
+
+                        <span>@staffname</span>
+                        <i class="caret"></i>
+                    </a>
+
+                    <ul class="dropdown-menu dropdown-menu-right">
+                        <li><a href="~/Staff/LogOut"><i class="icon-switch2"></i> Logout</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <!-- /main navbar -->
+    <!-- Page container -->
+    <div class="page-container" style="min-height:455px">
+
+        <!-- Page content -->
+        <div class="page-content">
+
+            <!-- Main sidebar -->
+            <div class="sidebar sidebar-main">
+                <div class="sidebar-content">
+
+                    <!-- User menu -->
+                    @*<div class="sidebar-user">
+                    <div class="category-content">
+                        <div class="media">
+                            <a href="#" class="media-left"><img src="assets/images/image.png" class="img-circle img-sm" alt=""></a>
+                            <div class="media-body">
+                                <span class="media-heading text-semibold">Victoria Baker</span>
+                                <div class="text-size-mini text-muted">
+                                    <i class="icon-pin text-size-small"></i> &nbsp;Santa Ana, CA
+                                </div>
+                            </div>
+
+                            <div class="media-right media-middle">
+                                <ul class="icons-list">
+                                    <li>
+                                        <a href="#"><i class="icon-cog3"></i></a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>*@
+                    <!-- /user menu -->
+                    <!-- Main navigation -->
+                    <div class="sidebar-category sidebar-category-visible">
+                        <div class="category-content no-padding">
+                            <ul class="navigation navigation-main navigation-accordion">
+                                <li><a href="~/AppointmentBooking/Index">
+                                    <img width="30" height="30"  src="https://portalvhdslvb28rs1c3tmc.blob.core.windows.net/yammo/careme/iconpack/icon_appointment.png"/>
+                                    <span>Patient Appointments</span></a></li>
+                                <li><a href="~/History/Index">
+                                        <img width="30" height="30" src="https://portalvhdslvb28rs1c3tmc.blob.core.windows.net/yammo/careme/iconpack/icon_history.png" />
+                                    <span>Patient History</span></a></li>
+                                <li><a href="~/DoctorSchedule/Index">
+                                        <img width="30" height="30" src="https://portalvhdslvb28rs1c3tmc.blob.core.windows.net/yammo/careme/iconpack/icon_doctorlist.png" />
+                                    <span>Doctors & schedule</span></a></li>
+                                <li><a href="~/Hospital/Index">
+                                        <img width="30" height="30" src="https://portalvhdslvb28rs1c3tmc.blob.core.windows.net/yammo/careme/iconpack/icon_hospital.png" />
+                                     <span>Hospitals</span></a></li>
+                                <li><a href="~/DoctorScheduleDetail/Index">
+                                        <img width="30" height="30" src="https://portalvhdslvb28rs1c3tmc.blob.core.windows.net/yammo/careme/iconpack/icon_schedule.png" />
+                                    <span>Schedule Manager</span></a></li>
+                                <li><a href="~/Booking/Index">
+                                        <img width="30" height="30" src="https://portalvhdslvb28rs1c3tmc.blob.core.windows.net/yammo/careme/iconpack/icon_booking.png" />
+                                     <span>Patient Booking</span></a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <!-- /main navigation -->
+
+                </div>
+            </div>
+            <!-- /main sidebar -->
+            <!-- Main content -->
+            <div class="content-wrapper">
+
+                <!-- Page header -->
+                <div class="page-header">
+
+
+                    @*<div class="breadcrumb-line">
+                            <ul class="breadcrumb">
+                                <li><a href="index.html"><i class="icon-home2 position-left"></i> Home</a></li>
+                                <li><a href="2_col.html">Starters</a></li>
+                                <li class="active">2 columns</li>
+                            </ul>
+
+                            <ul class="breadcrumb-elements">
+                                <li><a href="#"><i class="icon-comment-discussion position-left"></i> Link</a></li>
+                                <li class="dropdown">
+                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                        <i class="icon-gear position-left"></i>
+                                        Dropdown
+                                        <span class="caret"></span>
+                                    </a>
+
+                                    <ul class="dropdown-menu dropdown-menu-right">
+                                        <li><a href="#"><i class="icon-user-lock"></i> Account security</a></li>
+                                        <li><a href="#"><i class="icon-statistics"></i> Analytics</a></li>
+                                        <li><a href="#"><i class="icon-accessibility"></i> Accessibility</a></li>
+                                        <li class="divider"></li>
+                                        <li><a href="#"><i class="icon-gear"></i> All settings</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                            <a class="breadcrumb-elements-toggle"><i class="icon-menu-open"></i></a>
+                        </div>*@
+                </div>
+
+                <!-- /page header -->
+                <!-- Content area -->
+                <div class="content" style="height:89vh">
+                    @RenderBody()
+                    <!-- Footer -->
+                    <div class="footer text-muted">
+                        © 2018. <a href="#">Developed</a> by <a href="http://themeforest.net/user/Kopyov" target="_blank">Yammobots</a>
+                    </div>
+                    <!-- /footer -->
+
+                </div>
+                <!-- /content area -->
+
+            </div>
+            <!-- /main content -->
+
+        </div>
+        <!-- /page content -->
+
+    </div>
+    <!-- /page container -->
+
+
+    <script src="~/Scripts/jquery-1.10.2.min.js"></script>
+    <script type="text/javascript" src="~/Scripts/bootstrap.min.js"></script>
+    <script src="~/Scripts/moment.min.js"></script>
+
+    <script src="~/themes/assets/js/plugins/pickers/daterangepicker.js"></script>
+    <script src="~/Content/timepicker/jquery.ptTimeSelect.js"></script>
+    <script type="text/javascript" src="~/Scripts/blockui.min.js"></script>
+    <script src="~/Scripts/jquery.slimscroll.js"></script>
+
+    @Scripts.Render("~/bundles/project")
+
+    <script src="~/Scripts/jszip.min.js"></script>
+
+    @RenderSection("scripts", required: false)
+
+    <script>
+        $('.sidebar-main-toggle').on('click', function (e) {
+            e.preventDefault();
+
+            // Toggle min sidebar class
+            $('body').toggleClass('sidebar-xs');
+        });
+    </script>
+</body>
+</html>

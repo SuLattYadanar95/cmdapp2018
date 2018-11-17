@@ -1,0 +1,63 @@
+﻿@model List<Data.Models.tbScheduleData>
+
+   <table class="table" width="100%">
+        <thead>
+            <tr>
+                @{
+                        var today = ViewBag.Date;  //Core.Extensions.MyExtension.getLocalTime(DateTime.UtcNow).Date;
+                        for (var i = 0; i < 5; i++)
+                        {
+                        <th class="mr-10">
+                            <text>@today.AddDays(i).ToString("dd MMM yyyy")</text>
+                        </th>
+                    }
+                }
+            </tr>
+
+        </thead>
+        <tbody>
+            <tr>
+                @{
+                    var today_bd = @today; //Core.Extensions.MyExtension.getLocalTime(DateTime.UtcNow).Date;
+                }
+                @for (var i = 0; i < 5; i++)
+                {
+                    var fromdate = today_bd.AddDays(i).Date;
+                    var todate = today_bd.AddDays(i + 1).Date;
+
+                    var schdata = Model.Where(a => a.AppointmentDatetime >= fromdate && a.AppointmentDatetime < todate).ToList();
+                    if (schdata.Count > 0)
+                    {
+                        <td class="mr-5" style="vertical-align: top!important;">
+                            @foreach (var item in schdata)
+                            {
+                                <div class="panel-custom-default" style="margin-bottom:4px;padding:3px;text-align:center;background-color:#f6ebeb!important">
+
+                                    <div class="row">
+                                        <div class="col-xs-12">
+
+                                            <span>@item.Fromtime.Value.ToShortTimeString()</span><span> -</span>
+                                            <span>@item.Totime.Value.ToShortTimeString()</span>
+                                        </div>
+
+                                        <div class="mt-20" style="text-align:center">
+                                            @*<button class="btn btn-primary btn-xs btn-rounded pull-left" data-appdate="@item.AppointmentDatetime" data-fromtime="@item.Fromtime" data-totime="@item.Totime" data-doctorid="@item.ID" data-doctorname="@item.DoctorName" onclick="addPatient(this)">Book Now</button>*@
+                                         
+                                               <a class="" date-scheduleid="@item.ID" data-appdate="@item.AppointmentDatetime" data-fromtime="@item.Fromtime" data-totime="@item.Totime" data-doctorid="@item.DoctorID" data-doctorname="@item.DoctorName" onclick="addPatient(this)">Book Now</a>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                            }
+                        </td>
+                    }
+                    else
+                    {
+                        <td class="mr-5"> </td>   }
+                }
+            </tr>
+
+        </tbody>
+    </table>
+                    

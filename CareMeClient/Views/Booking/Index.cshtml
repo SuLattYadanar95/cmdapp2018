@@ -1,0 +1,516 @@
+﻿@model Data.ViewModels.DoctorSpecialitiesViewModel
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<style>
+    .table > tbody > tr > td {
+        padding: 10px 10px !important;
+    }
+
+    .table > thead > tr > th {
+        padding: 8px 6px !important;
+        padding-bottom: 0px !important;
+    }
+
+    .card {
+        border: none;
+    }
+
+    #btn {
+        width: 200px;
+        margin-bottom: 10px;
+    }
+
+    table {
+        margin-top: 0px;
+        margin-bottom: 0px;
+    }
+
+
+        table td {
+            width: 30px;
+            border: none;
+        }
+
+    #button-right {
+        float: right;
+    }
+
+
+
+    #inner-text {
+        text-align: center;
+        top: 6px;
+        left: 0;
+        right: 0;
+        bottom: 6px;
+    }
+
+
+    /*#inner-text #right-chevron #left-chevron {
+            display: inline;
+        }*/
+</style>
+
+
+<div class="mt-20">
+    <div class="navbar  navbar-component fs14" style="position: relative; z-index: 18;">
+        <div >
+            <div class="col-xs-12 " style="float:left">
+                <h3 class="lh10 mt-5">Patient Booking</h3>
+                <small>Find schedules and make booking for patient</small>
+                
+            </div>
+
+
+            <div class="col-md-3" style="float:right">
+                <div class="form-group">
+                    <label>&ensp;</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Search for..." name="q" id="txt_doctorName" autocomplete="off">
+                        <span class="input-group-btn">
+                            <button class="btn btn-default"  type="button" onclick="Search()">Go!</button>
+                        </span>
+                    </div><!-- /input-group -->
+
+                </div>
+            </div>
+
+            <div class="col-md-3" style="float:right">
+                <label>Doctor Name</label>
+                <select name="doctorID" id="DD_Doctor" class="form-control zawgyi_text">
+                    <option value="0">Doctor Name</option>
+                    @foreach (var doctor in Model.doctors)
+                    {
+                        <option value="@doctor.ID" class="zawgyi_text">@doctor.Name</option>
+                    }
+                </select>
+            </div>
+
+            <div class="col-md-3" style="float:right">
+
+                <label>Speciality</label>
+                <select name="specialtyID" id="DD_Specialty" class="form-control zawgyi_text">
+                   
+                     <option value="0">Speciality</option>
+                    @foreach (var specialty in Model.specialities)
+                    {
+                        <option value="@specialty.ID" class="zawgyi_text">@specialty.Specialty</option>
+                    }
+                </select>
+
+            </div>
+
+            <div class="col-md-3" style="float:right" id="textbox">
+                <label>Appointment Date</label>
+                <div class="input-group">
+                    <input type="text" class="form-control daterange-single" value="" id="_choicedate">
+                    <span class="input-group-addon"><i class="icon-calendar22"></i></span>
+                     
+                </div>
+                
+                @*<p class="mt-10">Date : <span id="datetime">@Core.Extensions.MyExtension.getLocalTime(DateTime.UtcNow).ToShortDateString()</span></p>*@
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+<div class="">
+    <div class="col-md-12" style="margin-top:-20px">
+        <div class="col-md-3">
+            <div id="doc3_schedule">
+
+            </div>
+        </div>
+
+        <div class="col-md-9">
+            <div id="div_List">
+                <div id="loading" style="text-align:center">
+                    <img src="~/Content/Image/Spinner-1s-200px.gif" width="200" height="200" />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@*<div class="col-md-9">
+    <div id="div_List">
+        <div id="loading" style="text-align:center">
+            <img src="~/Content/Image/Spinner-1s-200px.gif" width="200" height="200" />
+        </div>
+    </div>
+</div>*@
+
+
+
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModal-label" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div id="Patient">
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+@section scripts{
+    <script type="text/javascript">
+        var page = 1;
+        var pagesize = 5;
+        var docid;
+        var docname;
+        var fromtime;
+        var totime;
+        var datetime;
+        var type;
+        var cdate;
+        var specialtyid;
+        var date;
+        $(function () {
+          
+            LoadMainList();
+            //LoadMainList1()
+            LoadAppointmentSchedule();
+            initComponents();
+            initPaging();
+
+            $('.daterange-single').daterangepicker({
+                singleDatePicker: true,
+            });
+
+        });
+
+        function initPaging() {
+            $("#div_List").on("click", ".pagedList a", function (e) {
+                e.preventDefault();
+                var $a = $(this).attr("href");
+                try {
+                    var pageurl = $a.split(/=/);
+                    page = pageurl[1];
+                    if (page == null) {
+                        page = 1;
+                    }
+                }
+                catch (e) {
+                    page = 1;
+                }
+                LoadMainList();
+            });
+        }
+
+        function DocSchedule(e) {
+            var ID = $(e).attr('data-id');
+            $("#div_class").toggle();
+        }
+
+        $(document).ready(function () {
+
+            $("#myCarousel").carousel({
+
+                interval: false
+            })
+
+
+        });
+
+        function initComponents() {
+            $('#DD_Specialty').on('change', function () {
+                Search();
+            });
+            $('#DD_Doctor').on('change', function () {
+                Search();
+            });
+
+        }
+
+        function Search() {
+            docid = $('#DD_Doctor').val();
+            docname = $('#txt_doctorName').val();
+            specialtyid = $('#DD_Specialty').val();
+            cdate = $('#_choicedate').val();
+            LoadMainList();
+
+
+        }
+
+        function LoadMainList() {
+            $('#loading').show();
+            $.ajax({
+                cache: false,
+                url: '@Url.Action("_list", "Booking")',
+                data: { docid: docid, specialityid: specialtyid, docname: docname, datetime: cdate, fromtime: fromtime, totime: totime, pagesize: pagesize, page: page },
+                beforeSend: function () {
+
+                },
+                success: function (result) {
+                    $('#div_List').empty().append(result);
+                },
+                complete: function () {
+                    $('#loading').hide();
+                    $('#_choicedate').val("");
+                }
+            });
+        }
+
+
+
+        function DoctorListByTime(e) {
+            var from = $(e).attr('data-fromtime');
+            var appointmentid = $(e).attr('data-appointmentID');
+            var to = $(e).attr('data-totime');
+            var date = $('#_choicedate').val();
+           // alert(from);
+
+            $.ajax({
+                cache: false,
+                url: '@Url.Action("DoctorListByTime", "Booking")',
+                data: { fromtime: from, totime: to, pagesize: pagesize, page: page, appointmentid: appointmentid, date: date },
+                beforeSend: function () {
+
+                },
+                success: function (result) {
+                    $('#div_List').empty().append(result);
+                },
+                complete: function () {
+
+
+
+                }
+            });
+
+        }
+
+
+        function LoadAppointmentSchedule() {
+            $('.daterange-single').change(function () {
+                //  alert(document.getElementById('_choicedate').value);
+                var cdate = document.getElementById('_choicedate').value;
+
+                //var datetime=document.getElementById('#text1').value;
+                //alert("bnqjkghkh" + datetime);
+
+                $.ajax({
+                    cache: false,
+                    url: '@Url.Action("AppointmentSchedule", "Booking")',
+                    data: { datetime: cdate, type: type },
+                    beforeSend: function () {
+
+                    },
+                    success: function (result) {
+                        $('#doc3_schedule').empty().append(result);
+                       
+                     
+                    },
+                    complete: function () {
+
+
+
+                    }
+                });
+            });
+        }
+
+
+            @*function LoadMainList1() {
+                $('#loading').show();
+
+                $.ajax({
+                    cache: false,
+                    url: '@Url.Action("_doctor3list", "Doctor3")',
+                    data: { docid: docid, speciality: speciality, docname: docname, datetime: datetime, fromtime: fromtime, totime: totime, pagesize: pagesize, page: page },
+                    beforeSend: function () {
+
+                    },
+                    success: function (result) {
+                        $('#div_List').empty().append(result);
+                    },
+                    complete: function () {
+                        $('#loading').hide();
+
+
+                    }
+                });
+            }*@
+
+
+        function prev(e) {
+            //  var docid = $(e).attr('data-docid');
+            var appDate = $(e).attr('data-appdate');
+            var appDate1 = $(e).attr('data-appdate1');
+
+            $.ajax({
+                cache: false,
+                url: '@Url.Action("AppointmentSchedule", "Booking")',
+                data: { datetime: appDate, type: "prev" },
+                beforeSend: function () {
+
+                },
+                success: function (result) {
+                    $("#doc3_schedule").empty().append(result);
+                    $("#textbox").empty().append('<div class="input-group"><label>Appointment Date</label><input type="text" class="form-control daterange-single" value="' + moment(appDate1).format("MM/DD/YYYY") + '" id="_choicedate"><span class="input-group-addon"><i class="icon-calendar22"></i></span></div>')
+                },
+                complete: function () {
+                    $('.daterange-single').daterangepicker({
+                        singleDatePicker: true,
+
+                    });
+
+                    LoadAppointmentSchedule()
+                }
+            });
+        }
+        function next(e) {
+            //  var docid = $(e).attr('data-docid');
+            var appDate = $(e).attr('data-appdate');
+            var appDate1 = $(e).attr('data-appdate1');
+
+            $.ajax({
+                cache: false,
+                url: '@Url.Action("AppointmentSchedule", "Booking")',
+                data: { datetime: appDate, type: "next" },
+                beforeSend: function () {
+
+                },
+                success: function (result) {
+                    $("#doc3_schedule").empty().append(result);
+                    $("#textbox").empty().append('<div class="input-group"><input type="text" class="form-control daterange-single" value="' + moment(appDate1).format("MM/DD/YYYY") + '" id="_choicedate"><span class="input-group-addon"><i class="icon-calendar22"></i></span></div>')
+
+                },
+                complete: function () {
+                    $('.daterange-single').daterangepicker({
+                        singleDatePicker: true,
+
+                    });
+                    LoadAppointmentSchedule()
+
+                }
+            });
+
+        }
+
+
+
+        function ScheduleListByDoctor(e) {
+            var doctorid = $(e).attr('data-doctorID');
+            var doctorname = $(e).attr('data-doctorname');
+            var date = $('#_choicedate').val();
+            $("#div_schedulebydoctor_" + doctorid).toggle();
+            $.ajax({
+                cache: false,
+                url: '@Url.Action("_scheduleListbyDoctorID", "Booking")',
+                data: { doctorid: doctorid, doctorname: doctorname, date: date },
+                beforeSend: function () {
+
+                },
+                success: function (result) {
+                    $(".div_schedulebydoctor_" + doctorid).empty().append(result);
+                },
+                complete: function () {
+                }
+            });
+        }
+
+       function addPatient(e) {
+        var doctorid = $(e).attr('data-doctorid');
+        var doctorname = $(e).attr('data-doctorname');
+        var appdate = $(e).attr('data-appdate');
+        var fromtime = $(e).attr('data-fromtime');
+        var totime = $(e).attr('data-totime');
+        var scheduleid = $(e).attr('date-scheduleid');
+        
+        PatientForm("Add", 0, doctorid, doctorname, appdate, fromtime, totime, scheduleid);
+    }
+
+       function PatientForm(FormType, ID, doctorid, doctorname, appdate, fromtime, totime, scheduleid) {
+        $.ajax({
+            cache: false,
+            url: '@Url.Action("_PatientForm", "Booking")',
+            data: { FormType: FormType, ID: ID, doctorid: doctorid, doctorname: doctorname, appdate: appdate, fromtime: fromtime, totime: totime, scheduleid: scheduleid },
+            beforeSend: function () {
+
+            },
+            success: function (myData) {
+                $('#Patient').empty().append(myData);
+            },
+            complete: function () {
+
+                $('#myModal').modal('show');
+                bindSpecialityDD();
+
+                $('#PatientForm').submit(function (e) {
+                    var doctorid = $('#doctorid').val();
+                    var doctorname = $('#doctorname').val();
+                    var appdate = $('#appdate').val();
+                    var fromtime = $('#fromtime').val();
+                    var totime = $('#totime').val();
+                    var scheduleid = $('#scheduleid').val();
+                    e.preventDefault();
+                    $.ajax({
+                        cache: false,
+                        url: '@Url.Action("UpsertPatient", "Booking")',
+                        type: "Post",
+                        data: $(this).serialize() + "&doctorid=" + doctorid + "&doctorname=" + doctorname + "&appdate=" + appdate + "&fromtime=" + fromtime + "&totime=" + totime + "&scheduleid=" + scheduleid,
+                        beforeSend: function () {
+                            $('.btn').prop("disabled", true);
+                        },
+                        success: function (myData) {
+                            if (myData == "Success") {
+                                $('#myModal').modal('hide');
+                            } else {
+                                alert('Oooops');
+                            }
+                          
+                        },
+                        complete: function () {
+                            $('.btn').prop("disabled", false);
+
+                        }
+                    });
+                });
+
+            }
+
+
+        });
+
+    }
+
+        function bindSpecialityDD() {
+            $.ajax({
+                cache: false,
+                url: '@Url.Action("getSpecialityList", "Booking")',
+
+                beforeSend: function () {
+
+                },
+                success: function (result) {
+                    $('#DD_specialty').empty();
+                    $('#DD_specialty').append('<option value="0">-------Select-------</option>');
+                    for (var i = 0; i < result.length; i++) {
+                        $('#DD_specialty').append('<option value="' + result[i].ID + '">' + result[i].Specialty + '</option>')
+                    };
+                    var existingval = $('#specialtyID').val();
+                    $('#DD_specialty').val(existingval);
+                    $('#DD_specialty').on('change', function () {
+                        $('#specialty').val($('#DD_specialty :selected').text());
+                    });
+                },
+                complete: function () {
+                }
+            });
+        }
+
+
+
+    </script>
+}
+

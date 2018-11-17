@@ -1,0 +1,208 @@
+﻿
+@{
+    ViewBag.Title = "Appointment";
+}
+@section css{
+    <style>
+        .circle-loader {
+            margin-bottom: 1.5em;
+            border: 2px solid rgba(0, 0, 0, 0.2);
+            border-left-color: #5cb85c;
+            animation: loader-spin 1.2s infinite linear;
+            position: relative;
+            display: inline-block;
+            vertical-align: top;
+            border-radius: 50%;
+            width: 11em;
+            height: 11em;
+        }
+
+        .load-complete {
+            -webkit-animation: none;
+            animation: none;
+            border-color: #5cb85c;
+            transition: border 500ms ease-out;
+        }
+
+        @@keyframes loader-spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+
+
+
+}
+
+<div class="col-md-4 col-md-offset-4 col-xs-12 pa-0">
+    <div id="div_doctor_holder">
+
+    </div>
+
+    <br />
+    <h4 class="lh10"><i class="icon-info22"></i> Make an appointment</h4>
+    <span class="text-muted mb-5">Check schedule for this doctor in these hospital</span>
+    <br />
+    <br />
+
+    <div id="div_hospital_schedule_holder">
+
+    </div>
+
+    <br />
+    <br />
+</div>
+
+@section scripts{
+    <script type="text/javascript">
+        var doctorID = "@ViewBag.doctorID";
+        var hospitalID = 0;
+        var msgrid = "@ViewBag.msgrid";
+        var msgrname = "@ViewBag.msgrname";
+
+
+        $(function () {
+            bindDoctor();
+            bindHospitals();
+        });
+
+        function bindDoctor() {
+            $.ajax({
+                cache: false,
+                url: '@Url.Action("_doctor", "Doctor")',
+                data: { doctorID: doctorID },
+                beforeSend: function () {
+
+                },
+                success: function (result) {
+                    $('#div_doctor_holder').empty().append(result);
+                },
+                complete: function () {
+                }
+            });
+        }
+
+        function bindHospitals() {
+            $.ajax({
+                cache: false,
+                url: '@Url.Action("_hospitalList", "Hospital")',
+                data: { doctorID: doctorID, hospitalID: hospitalID },
+                beforeSend: function () {
+
+                },
+                success: function (result) {
+                    $('#div_hospital_schedule_holder').empty().append(result);
+                },
+                complete: function () {
+                }
+            });
+        }
+
+        function showSchedules(e) {
+            var hpid = $(e).attr('data-hospitalid');
+            $('.hs_hide').addClass('hidden');
+            $('.hs_show').removeClass('hidden');
+            $('#div_hs_show_' + hpid).addClass('hidden');
+            $('#div_hs_hide_' + hpid).removeClass('hidden');
+        }
+
+        function bindHospitalSchedule() {
+
+        }
+
+        function makebooking(e) {
+            var doctorid = $(e).attr('data-doctorid');
+            var doctorname = $(e).attr('data-doctorname');
+            var appdate = $(e).attr('data-appdate');
+            var fromtime = $(e).attr('data-fromtime');
+            var totime = $(e).attr('data-totime');
+            var scheduleid = $(e).attr('data-scheduleid');
+            var date = $(e).attr('data-date');
+            var hospitalID = $(e).attr('data-hospitalid');
+            var displaydate = $(e).attr('data-displaydate');
+            var displaytime = $(e).attr('data-displaytime');
+            
+            $('.pform').empty().hide();
+            PatientForm("Add", 0, doctorid, doctorname, appdate, fromtime, totime, scheduleid, date,hospitalID , displaydate,displaytime);
+        }
+
+        function cancelBooking() {
+            $('.pform').empty().hide();
+            $('.datebtns').show();
+        }
+
+        function PatientForm(FormType, ID, doctorid, doctorname, appdate, fromtime, totime, scheduleid, date, hospitalID, displaydate,displaytime) {
+            console.log('#pform_' + date);
+            console.log("hid" + hospitalID);
+            console.log(scheduleid);
+;            $.ajax({
+                cache: false,
+                url: '@Url.Action("_PatientForm", "Patient")',
+                data: { FormType: FormType, ID: ID, doctorid: doctorid, doctorname: doctorname, appdate: appdate, fromtime: fromtime, totime: totime, scheduleid: scheduleid, MsgrID:msgrid, MsgrName: msgrname },
+                beforeSend: function () {
+
+                },
+                success: function (myData) {
+                    $('#pform_' + date).empty().append(myData);
+                    $('#pform_' + date).show();
+                    $('.txt_date').empty().append(displaydate + " " + displaytime);
+
+                    $('.datebtns').hide();
+                    
+                },
+                complete: function () {
+
+
+
+                    //$('#myModal').modal('show');
+                    //bindSpecialityDD();
+
+                    $('#PatientForm').submit(function (e) {
+                        var doctorid = $('#doctorid').val();
+                        var doctorname = $('#doctorname').val(); 
+                        var appdate = $('#appdate').val();
+                        var fromtime = $('#fromtime').val();
+                        var totime = $('#totime').val();
+                        var scheduleid = $('#scheduleid').val();
+                        e.preventDefault();
+                        $.ajax({
+                            cache: false,
+                            url: '@Url.Action("UpsertPatient", "Booking")',
+                            type: "Post",
+                            data: $(this).serialize() + "&doctorid=" + doctorid + "&doctorname=" + doctorname + "&appdate=" + appdate + "&fromtime=" + fromtime + "&totime=" + totime + "&scheduleid=" + scheduleid + "&hospitalID=" + hospitalID,
+                            beforeSend: function () {
+                                $('.btn').prop("disabled", true);
+                            },
+                            success: function (myData) {
+                                if (myData != "Fail") {
+                                    // window.location = '/Appointment/Success';
+                                    $('#pform_' + date).empty().append(myData);
+                                } else {
+                                    alert("Booking process fail");
+                                }
+                                //$('#myModal').modal('hide');
+                            },
+                            complete: function () {
+                                $('.btn').prop("disabled", false);
+
+                            }
+                        });
+                    });
+
+                }
+
+
+            });
+
+        }
+
+    </script>
+    
+    
+    
+    }

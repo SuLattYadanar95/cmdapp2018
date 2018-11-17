@@ -1,0 +1,72 @@
+﻿@model Data.ViewModels.AppointScheduleViewModel
+
+<head>
+    <style>
+
+   button
+    {
+    border:none;
+    }
+    </style>
+   
+</head>
+  
+
+        <h4 style="text-align:center">Appointment Date</h4>
+        <div id="myCarousel" class="carousel slide mt-10" style="margin-bottom:30px" data-ride="carousel">
+
+            <div class="carousel-inner" id="inner-text">
+                <div class="item active" id="text1" style="font-size:14px;font-weight:bold">
+                   @if (Model.appointDatetime != null)
+                   {
+                   @Model.appointDatetime.Value.ToString("dd MMM yyyy")
+                   }
+                
+                </div>
+
+            </div>
+            @*<a class="left carousel-control" href="#myCarousel" data-slide="prev" style="background-image:none;">
+                <span class="glyphicon glyphicon-chevron-left"></span>
+            </a>
+
+            <a class="right carousel-control" href="#myCarousel" data-slide="next" style="background-image:none;">
+                <span class="glyphicon glyphicon-chevron-right"></span>
+
+            </a>*@
+            @*<button data-appdate="@Model.appointDatetime" onclick="prev(this)" class="left carousel-control" data-slide="prev" style="background-image:none;">
+                <span class="glyphicon glyphicon-chevron-left"></span>
+                
+            </button>
+            <button data-appdate="@Model.appointDatetime" onclick="next(this)" class="right carousel-control" data-slide="next" style="background-image:none;">
+                <span class="glyphicon glyphicon-chevron-right"></span>
+                
+            </button>*@
+            @if (Model.appointDatetime != null)
+            {
+                <span type="button" data-appdate="@Model.appointDatetime" data-appdate1="@Model.appointDatetime.Value.AddDays(-1)" onclick="prev(this)" class="left carousel-control " data-slide="prev" style="background-image:none;">
+                    <span class="glyphicon glyphicon-chevron-left"></span>
+
+                </span>
+                <span type="button" data-appdate="@Model.appointDatetime" data-appdate1="@Model.appointDatetime.Value.AddDays(1)" onclick="next(this)" class="right carousel-control " data-slide="next" style="background-image: none;">
+                    <span class="glyphicon glyphicon-chevron-right"></span>
+
+                </span>
+            }
+
+          
+
+        </div>
+@foreach (var list in Model.scheduledatas.OrderBy(a=>a.Fromtime))
+{
+
+        <div class="" align="center"> 
+            <a onclick="DoctorListByTime(this)" data-fromtime="@list.Fromtime" data-appointmentID="@list.ID" data-totime="@list.Totime"
+               class="btn btn-danger btn-lg btn-rounded btn-block" id="btn">@list.Fromtime.Value.ToShortTimeString() - @list.Totime.Value.ToShortTimeString()</a>
+        </div>
+
+
+}
+        
+
+
+       

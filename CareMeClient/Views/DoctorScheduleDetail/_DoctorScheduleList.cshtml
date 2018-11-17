@@ -1,0 +1,99 @@
+﻿@model Data.ViewModels.PagedListClient<Data.ViewModels.ScheduleDoctorViewModel>
+@using PagedList;
+@using PagedList.Mvc;
+
+@{
+    if (Model.TotalCount > 0)
+    {
+        <div id="list_binder">
+            <div class="container-fluid">
+
+                <div class="container-fluid">
+
+                    <!-- Wrapper for slides -->
+
+                    <div class="container-fluid">
+
+                        <div class="row">
+                            @foreach (var doctor in Model.Results)
+                            {
+                                <div class="panel-custom-default mt-5">
+                                    <div class="panel-heading">
+                                        <div class="panel-title">
+                                            <div class="media-left media-middle">
+                                                <img src="~/Content/Image/doctor.png" class="img-circle img-responsive" style="max-height:none;" />
+                                            </div>
+                                            <div class="media-body">
+                                                <div><h5 class="zawgyi_text">@doctor.doctor.Name</h5></div>
+                                                <div class="text-size-small">
+                                                    Qulification: <span class="text-bold zawgyi_text">@doctor.doctor.Qualification</span>
+                                                </div>
+                                            </div>
+
+                                            <div class="heading-elements">
+                                                <button class="btn btn-primary btn-xs btn-rounded" data-doctorid="@doctor.doctor.ID" data-hospitalid="@doctor.dochos.HospitalID" data-doctorname="@doctor.doctor.Name" data-hospitalname="@doctor.dochos.HospitalName" onclick="addSchedule(this)">Add Schedule</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                  @if (doctor.schedule.Count > 0)
+                                  {
+                                   
+                                    <div id="myCarousel" class="carousel slide">
+                                        @*<span style="margin-left:30px" class="text text-blue">Total schedule list : @doctor.schedule.Count</span>*@
+                                           
+                                           <div id="doc_schedule_@doctor.doctor.ID">
+                                                @Html.Partial("_nextschedulelist", doctor.schedule)
+                                            </div>
+                                     
+                                    </div>
+                                  }
+                                  else
+                                  {
+                                   <div id="noschedulelist">
+                                       <div class="m-5 panel-custom-default pa-10" style="background-color:#fcfcfc!important">
+                                           <div class="row">
+                                               <div class="col-xs-12">
+                                                   <h4 style="text-align:center">There is no schedule list</h4>
+                                               </div>
+
+                                           </div>
+                                       </div>
+                                       <div class="clearfix"></div>
+                                   </div>
+                                   
+                                   
+                                  }
+                                </div>
+                            }
+                        </div>
+
+                    </div>
+
+                </div>
+                <!-- Left and right controls -->
+
+            </div>
+        </div>
+
+        <br /><br />
+        <div class="col-md-12">
+            <div class="pagedList" style="text-align:center">
+                @Html.PagedListPager(Model.Results, page => Url.Action("_DoctorScheduleList", "DoctorScheduleDetail",
+                                                                                      new { page }), PagedListRenderOptions.ClassicPlusFirstAndLast)
+            </div>
+
+        </div>
+    }
+
+    else
+    {
+        <div class="panel-custom-default pa-10 mt-20">
+            <div class="row">
+                <div class="col-md-12">
+                    <h4 style="text-align:center">......There is no schedule...........</h4>
+                </div>
+            </div>
+        </div>
+    }
+
+}

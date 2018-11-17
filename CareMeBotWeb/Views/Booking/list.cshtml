@@ -1,0 +1,44 @@
+﻿
+@{
+    ViewBag.Title = "list";
+}
+
+
+<div class="col-md-4 col-md-offset-4 col-xs-12 pa-0">
+    <h2 class="text-green-700"><i class="icon-book"></i> Your Bookings</h2>
+   
+
+    <div id="bookedlist">
+
+    </div>
+</div>
+
+
+
+@section scripts{
+    <script type="text/javascript">
+        var msgrid = '@ViewBag.msgrid';
+        $(function () {
+            bindBookedList();
+        });
+
+
+        function bindBookedList() {
+            $.ajax({
+                cache: false,
+                url: '@Url.Action("_bookedlist", "Booking")',
+                data: {userid : msgrid},
+                beforeSend: function () {
+
+                },
+                success: function (result) {
+                    $('#bookedlist').empty().append(result);
+                },
+                complete: function () {
+                }
+            });
+        }
+
+    </script>
+    
+    }

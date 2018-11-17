@@ -1,0 +1,383 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+ 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+         .table > tbody > tr > td {
+        padding: 10px 10px !important;
+    }
+
+    .table > thead > tr > th {
+        padding: 8px 6px !important;
+        padding-bottom: 0px !important;
+    }
+        .card {
+            border: none;
+        }
+
+        #btn {
+            width: 200px;
+            margin-bottom: 10px;
+          
+           
+        }
+
+        table {
+            margin-top: 0px;
+            margin-bottom: 0px;
+        }
+
+      
+        table td {
+            width: 30px;
+            border: none;
+         
+        }
+
+        #button-right {
+            float: right;
+        }
+
+        
+
+        #inner-text {
+            text-align:center;
+             top: 6px;
+      left: 0;
+      right: 0;
+      bottom: 6px;
+         
+        }
+
+        
+        /*#inner-text #right-chevron #left-chevron {
+            display: inline;
+        }*/
+    </style>
+
+
+   <div class="mt-20">
+    <div class="navbar  navbar-component fs14" style="position: relative; z-index: 18;">
+        <div class="navbar-collapse collapse" id="navbar-form-select2">
+            <div class="col-md-3" style="float:right">
+                <div class="form-group">
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Search for..." name="q" id="txt_itemName">
+                        <span class="input-group-btn">
+                            <button class="btn btn-default" type="button" onclick="Search()">Go!</button>
+                        </span>
+                    </div><!-- /input-group -->
+
+                </div>
+            </div>
+
+            <div class="col-md-3" style="float:right">
+                <select name="doctorID" id="DD_Doctor" class="form-control">
+                    <option value="0">All</option>
+                    <option value="1">Dr Kyaw Kyaw</option>
+                    <option value="2">Dr Kyaw Kyaw</option>
+                    <option value="3">Dr Kyaw Kyaw</option>
+                </select>
+            </div>
+
+            <div class="col-md-3" style="float:right">
+                <select name="doctorID" id="DD_Specialty" class="form-control">
+                    <option value="0">Specialty</option>
+                    <option value="1">Specialty 1</option>
+                    <option value="2">Specialty 2</option>
+                    <option value="3">Specialty 3</option>
+                </select>
+            </div>
+
+            <div class="col-md-3" style="float:right">
+
+                <div class="input-group">
+
+                    <input type="text" class="form-control daterange-single" value="">
+                    <span class="input-group-addon"><i class="icon-calendar22"></i></span>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</div>   
+
+
+    @*<div class="mt-20">
+        <div class="navbar  navbar-component fs14" style="position: relative; z-index: 18;">
+
+            <form class="navbar-form">
+                <div class='col-md-4 input-group date' id='dtpickerdemo'>
+                    <input type='text' data-format="yyyy-MM-dd hh:mm:ss" class="form-control" id="pickerdemo" />
+                    <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-calendar"></span>
+                    </span>
+                </div>
+                <div class="form-group">
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Doctor Name..." name="q" id="txt_itemName">
+                        <span class="input-group-btn">
+                            <button class="btn btn-default" type="button" onclick="Search()"><span class="glyphicon glyphicon-search"></span></button>
+                        </span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+
+                    <select class="form-control" id="Type" name="Type" required="required">
+                        <option value="">Speciality</option>
+                        <option value="Child">Child</option>
+                        <option value="Adult">Adult</option>
+                    </select>
+                </div>
+            </form>
+
+            </div>
+
+        </div>
+    </div>*@
+
+
+
+
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="col-md-3">
+              
+                        <h4>Schedule</h4>
+                        <div id="myCarousel" class="carousel slide mt-10" style="margin-bottom:30px" data-ride="carousel">
+                            <a class="left carousel-control" href="#myCarousel" data-slide="prev" id="left-chevron" style="background-image:none;">
+                                <span class="glyphicon glyphicon-chevron-left"></span>
+                            </a>
+                            <a class="right carousel-control" href="#myCarousel" data-slide="next" style="background-image:none;">
+                                <span class="glyphicon glyphicon-chevron-right"></span>
+                                
+                            </a>
+                         
+                            <div class="carousel-inner" id="inner-text">
+                                
+                                <div class="item active" style="">
+                                    1st October 2018
+                                </div>
+
+                                <div class="item">
+                                    2nd October 2018
+                                </div>
+
+                                <div class="item">
+                                    3rd October 2018
+
+                                </div>
+
+                            </div>
+                          
+
+
+
+                        </div>
+                  
+                     <div class="" style="margin-left:23px">
+                         <a href="#" class="btn btn-primary btn-rounded" id="btn">6:00am - 8:00 am</a><br />
+                         <a href="#" class="btn btn-primary btn-rounded" id="btn">8:00am - 10:00 am</a><br />
+                         <a href="#" class="btn btn-primary btn-rounded" id="btn">10:00am - 12:00 pm</a><br />
+                         <a href="#" class="btn btn-primary btn-rounded" id="btn">12:00pm - 2:00 pm</a><br />
+                         <a href="#" class="btn btn-primary btn-rounded" id="btn">2:00pm - 4:00 pm</a><br />
+                         <a href="#" class="btn btn-primary btn-rounded" id="btn">4:00pm - 6:00 pm</a>
+                     </div>
+                  
+
+              
+            </div>
+
+
+            <div class="col-md-9">
+                <div class="container-fluid">
+                    <div class="panel panel-custom-default" style="border-radius:20px!important">
+                        <div class="panel-heading col-md-12">
+                            <div class="col-md-2">
+                                <img src="~/Content/Image/doctor.png" />
+                            </div>
+                            <div class="col-md-8">
+                                <h4>Dr. Kyaw Kyaw</h4>
+                                <p>B.D.S, Dip.D.Sc (Ygn)</p>
+                            </div>
+                            <div class="col-md-2 pull-right">
+
+                                <span class="glyphicon glyphicon-chevron-down" id="button-right" onclick="DocSchedule(this)"></span>
+
+                            </div>
+                        </div>
+
+                        <table class="table">
+
+                            <tbody id="div_class" style="display:none!important">
+                                <tr>
+                                    <td> 2nd October 2018</td>
+                                    <td> 2nd October 2018</td>
+                                    <td> 2nd October 2018</td>
+                                    <td> 2nd October 2018</td>
+                                </tr>
+                                <tr>
+                                    <td> 2nd October 2018</td>
+                                    <td> 2nd October 2018</td>
+                                    <td> 2nd October 2018</td>
+                                    <td> 2nd October 2018</td>
+                                </tr>
+                                <tr>
+                                    <td> 2nd October 2018</td>
+                                    <td> 2nd October 2018</td>
+                                    <td> 2nd October 2018</td>
+                                    <td> 2nd October 2018</td>
+                                </tr>
+                                <tr>
+                                    <td> 2nd October 2018</td>
+                                    <td> 2nd October 2018</td>
+                                    <td> 2nd October 2018</td>
+                                    <td> 2nd October 2018</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                    </div>
+
+
+
+                    <div class="panel panel-custom-default" style="border-radius:20px!important">
+                        <div class="panel-heading col-md-12">
+                            <div class="col-md-2">
+                                <img src="~/Content/Image/doctor.png" />
+                            </div>
+                            <div class="col-md-8">
+                                <h4>Dr. Martial</h4>
+                                <p>M.B.,B.S,M.Med.Sc (Paed), DCH, Dr.Med.Sc(Paed), FACTM, FAsCc, Fellowship in Paediatric Cardiology (Australia)</p>
+                            </div>
+                            <div class="col-md-2 pull-right">
+
+                                <span class="glyphicon glyphicon-chevron-down" id="button-right" onclick="DocSchedule(this)"></span>
+
+                            </div>
+                        </div>
+
+                        <table class="table">
+
+                            <tbody id="div_class" style="display:none!important">
+                                <tr>
+                                    <td> 2nd October 2018</td>
+                                    <td> 2nd October 2018</td>
+                                    <td> 2nd October 2018</td>
+                                    <td> 2nd October 2018</td>
+                                </tr>
+                                <tr>
+                                    <td> 2nd October 2018</td>
+                                    <td> 2nd October 2018</td>
+                                    <td> 2nd October 2018</td>
+                                    <td> 2nd October 2018</td>
+                                </tr>
+                                <tr>
+                                    <td> 2nd October 2018</td>
+                                    <td> 2nd October 2018</td>
+                                    <td> 2nd October 2018</td>
+                                    <td> 2nd October 2018</td>
+                                </tr>
+                                <tr>
+                                    <td> 2nd October 2018</td>
+                                    <td> 2nd October 2018</td>
+                                    <td> 2nd October 2018</td>
+                                    <td> 2nd October 2018</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                    </div>
+
+                    <div class="panel panel-custom-default" style="border-radius:20px!important">
+                        <div class="panel-heading col-md-12">
+                            <div class="col-md-2">
+                                <img src="~/Content/Image/doctor.png" />
+                            </div>
+                            <div class="col-md-8">
+                                <h4>Dr. John</h4>
+                                <p>M.B.,B.S,M.Med.Sc (Paed), DCH, Dr.Med.Sc(Paed), FACTM, FAsCc, Fellowship in Paediatric Cardiology (Australia)</p>
+                            </div>
+                            <div class="col-md-2 pull-right">
+
+                                <span class="glyphicon glyphicon-chevron-down" id="button-right" onclick="DocSchedule(this)"></span>
+
+                            </div>
+                        </div>
+
+                        <table class="table">
+
+                            <tbody id="div_class" style="display:none!important">
+                                <tr>
+                                    <td> 2nd October 2018</td>
+                                    <td> 2nd October 2018</td>
+                                    <td> 2nd October 2018</td>
+                                    <td> 2nd October 2018</td>
+                                </tr>
+                                <tr>
+                                    <td> 2nd October 2018</td>
+                                    <td> 2nd October 2018</td>
+                                    <td> 2nd October 2018</td>
+                                    <td> 2nd October 2018</td>
+                                </tr>
+                                <tr>
+                                    <td> 2nd October 2018</td>
+                                    <td> 2nd October 2018</td>
+                                    <td> 2nd October 2018</td>
+                                    <td> 2nd October 2018</td>
+                                </tr>
+                                <tr>
+                                    <td> 2nd October 2018</td>
+                                    <td> 2nd October 2018</td>
+                                    <td> 2nd October 2018</td>
+                                    <td> 2nd October 2018</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                    </div>
+                </div>
+            </div>
+       
+        
+        
+         </div>
+      </div>
+    
+
+
+
+
+@section scripts{
+    <script>
+        $(function () {
+            $('.daterange-single').daterangepicker({
+                singleDatePicker: true
+            });
+
+        });
+
+            function DocSchedule() {
+                $("#div_class").toggle();
+            }
+
+    $(document).ready(function(){
+
+        $("#myCarousel").carousel({
+
+            interval : false
+            })
+
+
+    });
+    </script>
+}
+

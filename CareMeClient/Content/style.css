@@ -1,0 +1,129 @@
+﻿/*progress tracker*/
+
+.progress-meter {
+  padding: 0;
+}
+
+ol.progress-meter {
+  padding-bottom: 9.5px;
+  list-style-type: none;
+}
+ol.progress-meter li {
+  display: inline-block;
+  text-align: center;
+  text-indent: -19px;
+  height: 39px;
+  width: 24.99%;
+  font-size: 12px;
+  border-bottom-width: 4px;
+  border-bottom-style: solid;
+}
+ol.progress-meter li:before {
+  position: relative;
+  float: left;
+  text-indent: 0;
+  left: -webkit-calc(50% - 9.5px);
+  left: -moz-calc(50% - 9.5px);
+  left: -ms-calc(50% - 9.5px);
+  left: -o-calc(50% - 9.5px);
+  left: calc(50% - 9.5px);
+}
+ol.progress-meter li.done {
+  font-size: 12px;
+}
+ol.progress-meter li.done:before {
+  content: "\2713";
+  height: 19px;
+  width: 19px;
+  line-height: 21.85px;
+  bottom: -28.175px;
+  border: none;
+  border-radius: 19px;
+}
+ol.progress-meter li.todo {
+  font-size: 12px;
+}
+ol.progress-meter li.todo:before {
+  content: "\2B24";
+  font-size: 17.1px;
+  bottom: -26.95px;
+  line-height: 18.05px;
+}
+ol.progress-meter li.done {
+  color: black;
+  border-bottom-color: #2196F3;
+}
+ol.progress-meter li.done:before {
+  color: white;
+  background-color: #2196F3;
+}
+ol.progress-meter li.todo {
+  color: silver;
+  border-bottom-color: silver;
+}
+ol.progress-meter li.todo:before {
+  color: silver;
+}
+ 
+
+/*progress tracker*/
+
+
+
+
+
+
+
+
+
+
+.h4{
+    font-family: 'Roboto', sans-serif;
+    font-size:18px;
+    color : #050505;
+}
+
+.spantxt{
+    font-family: 'Roboto', sans-serif;
+    font-size:15px;
+    color : #050505;
+}
+
+.ptxt{
+     font-family: 'Roboto', sans-serif;
+    font-size:15px;
+     color : #050505;
+}
+
+
+/*datetimepicker*/
+  .dropdown-menu {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        z-index: 4000 !important;
+        display: none;
+        min-width: 160px;
+        padding: 5px 0;
+        margin: 2px 0 0;
+        list-style: none;
+        font-size: 13px;
+        text-align: left;
+        background-color: #fff;
+        border: 1px solid #ddd;
+        border-radius: 3px;
+        -webkit-box-shadow: 0 6px 12px rgba(0,0,0,.175);
+        box-shadow: 0 6px 12px rgba(0,0,0,.175);
+        background-clip: padding-box;
+    }
+
+    
+  
+    
+
+
+
+
+
+   
+  

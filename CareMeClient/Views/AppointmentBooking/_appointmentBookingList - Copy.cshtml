@@ -1,0 +1,324 @@
+﻿@model Data.ViewModels.PagedListClient<Data.Models.tbAppointment>
+@using PagedList;
+@using PagedList.Mvc;
+
+
+@{
+
+    if (Model.TotalCount > 0)
+    {
+        <div id="list_Binder">
+
+
+            @foreach (var list in Model.Results)
+            {
+                <div class="panel-custom-default pa-10 mt-20" id="div_statuscancel">
+                    <div class="row">
+
+                        <div class="col-md-12">
+
+                            <div class="col-md-1">
+                                <span style="padding-top:10px">
+                                <img src="https://portalvhdslvb28rs1c3tmc.blob.core.windows.net/yammo/careme/iconpack/icon_patient_two.png" style="width: 80px; height: 80px;" /></span>
+                            </div>
+                            <div class="col-md-3">
+                                <h6 class="zawgyi_text ml-15">@list.PatientName</h6>
+                                <span class="zawgyi_text ml-15">@list.PatientAge yrs</span>
+                                <p class="zawgyi_text ml-15">Appointment : @list.AppointmentDateTime.Value.ToString("dd MMM yyyy") @list.AppointmentDateTime.Value.ToShortTimeString()</p>
+                            </div>
+                            @{
+                                if (list.Status == "BOOKED")
+                                {
+                                  
+                                    <div class="col-md-5 mt-10">
+                                        <ol class="progress-meter">
+                                            <li class="progress-point done">BOOKED</li><li class="progress-point todo @list.ID" data-status="BOOKED" data-id="@list.ID" onclick="newstatusChange(this)">WAITING</li><li class="progress-point todo">ISCHECKIN</li><li class="progress-point todo">CHECKOUT</li>
+                                        </ol>
+                                        @*<a href="#" class="btn border-danger text-danger btn-flat btn-rounded btn-icon btn-xs" onclick="newstatusChange(this)" data-status="CANCEL" data-id="@list.ID">Cancel</a>
+                                        &nbsp;&nbsp;
+                                        <a href="#" class="btn border-primary text-primary btn-flat btn-rounded btn-icon btn-xs" onclick="newstatusChange(this)" data-status="SKIP" data-id="@list.ID">Skip</a>*@
+                                        <a href="#" class="btn btn-danger btn-rounded btn-xs" onclick="newstatusChange(this)" data-status="CANCEL" data-id="@list.ID">Cancel</a>
+                                        &nbsp;&nbsp;
+                                        <a href="#" class="btn btn-primary btn-rounded  btn-xs" onclick="newstatusChange(this)" data-status="SKIP" data-id="@list.ID">Skip</a>
+
+                                    </div>
+                                }
+                                else if (list.IsWaiting == true)
+                                {
+                                   
+                                    <div class="col-md-5 mt-10">
+                                        <ol class="progress-meter">
+                                            <li class="progress-point done">BOOKED</li><li class="progress-point done">WAITING</li><li class="progress-point todo @list.ID" data-status="WAITING" data-id="@list.ID" onclick="newstatusChange(this)">ISCHECKIN</li><li class="progress-point todo">CHECKOUT</li>
+                                        </ol>
+                                        <a href="#" class="btn border-danger text-danger btn-flat btn-rounded btn-icon btn-xs" onclick="newstatusChange(this)" data-status="CANCEL" data-id="@list.ID">Cancel</a>
+                                        &nbsp;&nbsp;
+                                        <a href="#" class="btn border-primary text-primary btn-flat btn-rounded btn-icon btn-xs" onclick="newstatusChange(this)" data-status="SKIP" data-id="@list.ID">Skip</a>
+
+                                    </div>
+                                }
+                                else if (list.IsCheckIn == true)
+                                {
+                             
+                                    <div class="col-md-5 mt-10">
+                                        <ol class="progress-meter">
+                                            <li class="progress-point done">BOOKED</li><li class="progress-point done">WAITING</li><li class="progress-point done">ISCHECKIN</li><li class="progress-point todo @list.ID" data-status="CHECKIN" data-id="@list.ID" onclick="newstatusChange(this)">CHECKOUT</li>
+                                        </ol>
+                                        <a href="#" class="btn border-danger text-danger btn-flat btn-rounded btn-icon btn-xs" onclick="newstatusChange(this)" data-status="CANCEL" data-id="@list.ID">Cancel</a>
+                                        &nbsp;&nbsp;
+                                        <a href="#" class="btn border-primary text-primary btn-flat btn-rounded btn-icon btn-xs" onclick="newstatusChange(this)" data-status="SKIP" data-id="@list.ID">Skip</a>
+
+                                    </div>
+                                }
+                            }
+
+
+
+                            <div class="col-md-1">
+                                <h4><img src="https://portalvhdslvb28rs1c3tmc.blob.core.windows.net/yammo/careme/iconpack/icon_emergency.png" width="50" /></h4>
+                            </div>
+
+                            <div class="col-md-2 mt-10 ml-0">
+                                <span class="">
+                                    <span class="text-success" data-status="ACCEPTED" data-id="">Booking No : <span style="font-size:26px!important;font-weight:bold">@list.Counter</span> </span>
+                                   
+                                 </span>
+                            </div>
+
+
+
+
+
+                        </div>
+                    </div>
+                </div>
+                                }
+        </div>
+
+
+        <br /><br />
+        <div class="col-md-12">
+            <div class="pagedList" style="text-align:center">
+                @Html.PagedListPager(Model.Results, page => Url.Action("_appointmentBookinglist", "AppointmentBooking",
+                                                                                      new { page }), PagedListRenderOptions.ClassicPlusFirstAndLast)
+            </div>
+
+        </div>
+                                }
+
+                                else
+                                {
+                                    <div class="panel-custom-default pa-10 mt-20">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <h4 style="text-align:center">......There is no booking list......</h4>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@*<div class="panel-custom-default pa-10 mt-20" id="div_statuscancel">
+        <div class="row">
+
+            <div class="col-md-12">
+
+                <div class="col-md-2">
+                    <span style="padding-top:10px"><img src="~/Content/Image/patient.png" style="width: 80px; height: 80px;" /></span>
+                </div>
+                <div class="col-md-3">
+                    <h4 class="h4">Kyaw Kyaw</h4>
+                    <span class="spantxt">22 yrs</span>
+                    <p class="ptxt">Appointment Time : </p>
+                </div>
+
+                <div class="col-md-3 mt-10">
+                    <span class="">
+                        <span class="text-success" data-status="ACCEPTED" data-id="">Status : </span>
+                        &nbsp;&nbsp;
+                        <a href="#" class="btn border-success text-success btn-flat btn-rounded btn-icon btn-xs" onclick="statusChange(this)" data-status="CHECKIN" data-id="">Booked</a>
+                        <br /><br />
+                        <a href="#" class="btn border-danger text-danger btn-flat btn-rounded btn-icon btn-xs" onclick="statusChange(this)" data-status="CHECKIN" data-id="">Cancel</a>
+                        &nbsp;&nbsp;
+                        <a href="#" class="btn border-warning text-warning btn-flat btn-rounded btn-icon btn-xs" onclick="statusChange(this)" data-status="CHECKIN" data-id="">Skip</a>
+                    </span>
+                </div>
+
+
+                <div class="col-md-3 mt-10 ml-0">
+                    <span class="">
+                        <span class="text-success" data-status="ACCEPTED" data-id="">Booking No : </span>
+                        <a href="#" class="btn border-success text-success btn-flat btn-rounded btn-icon" onclick="statusChange(this)" data-status="CHECKIN" data-id="">5</a>
+                    </span>
+                </div>
+
+                <div class="col-md-1">
+                    <h4><img src="~/Content/Image/healthcare-and-medical (1).png" width="50" /></h4>
+                </div>
+
+
+
+
+            </div>
+        </div>
+    </div>
+
+    <div class="panel-custom-default pa-10 mt-20" id="div_statuscancel">
+        <div class="row">
+
+            <div class="col-md-12">
+
+                <div class="col-md-2">
+                    <span style="padding-top:10px"><img src="~/Content/Image/patient.png" style="width: 80px; height: 80px;" /></span>
+                </div>
+                <div class="col-md-3">
+                    <h4 class="h4">Kyaw Kyaw</h4>
+                    <span class="spantxt">22 yrs</span>
+                    <p class="ptxt">Appointment Time : </p>
+                </div>
+
+                <div class="col-md-3 mt-10">
+                    <span class="">
+                        <span class="text-success" data-status="ACCEPTED" data-id="">Status : </span>
+                        &nbsp;&nbsp;
+                        <a href="#" class="btn border-success text-success btn-flat btn-rounded btn-icon btn-xs" onclick="statusChange(this)" data-status="CHECKIN" data-id="">Booked</a>
+                        <br /><br />
+                        <a href="#" class="btn border-danger text-danger btn-flat btn-rounded btn-icon btn-xs" onclick="statusChange(this)" data-status="CHECKIN" data-id="">Cancel</a>
+                        &nbsp;&nbsp;
+                        <a href="#" class="btn border-warning text-warning btn-flat btn-rounded btn-icon btn-xs" onclick="statusChange(this)" data-status="CHECKIN" data-id="">Skip</a>
+                    </span>
+                </div>
+
+
+                <div class="col-md-3 mt-10 ml-0">
+                    <span class="">
+                        <span class="text-success" data-status="ACCEPTED" data-id="">Booking No : </span>
+                        <a href="#" class="btn border-success text-success btn-flat btn-rounded btn-icon" onclick="statusChange(this)" data-status="CHECKIN" data-id="">5</a>
+                    </span>
+                </div>
+
+                <div class="col-md-1">
+                    <h4><img src="~/Content/Image/healthcare-and-medical (1).png" width="50" /></h4>
+                </div>
+
+
+
+
+            </div>
+        </div>
+    </div>
+
+    <div class="panel-custom-default pa-10 mt-20" id="div_statuscancel">
+        <div class="row">
+
+            <div class="col-md-12">
+
+                <div class="col-md-2">
+                    <span style="padding-top:10px"><img src="~/Content/Image/patient.png" style="width: 80px; height: 80px;" /></span>
+                </div>
+                <div class="col-md-3">
+                    <h4 class="h4">Kyaw Kyaw</h4>
+                    <span class="spantxt">22 yrs</span>
+                    <p class="ptxt">Appointment Time : </p>
+                </div>
+
+                <div class="col-md-3 mt-10">
+                    <span class="">
+                        <span class="text-success" data-status="ACCEPTED" data-id="">Status : </span>
+                        &nbsp;&nbsp;
+                        <a href="#" class="btn border-success text-success btn-flat btn-rounded btn-icon btn-xs" onclick="statusChange(this)" data-status="CHECKIN" data-id="">Booked</a>
+                        <br /><br />
+                        <a href="#" class="btn border-danger text-danger btn-flat btn-rounded btn-icon btn-xs" onclick="statusChange(this)" data-status="CHECKIN" data-id="">Cancel</a>
+                        &nbsp;&nbsp;
+                        <a href="#" class="btn border-warning text-warning btn-flat btn-rounded btn-icon btn-xs" onclick="statusChange(this)" data-status="CHECKIN" data-id="">Skip</a>
+                    </span>
+                </div>
+
+
+                <div class="col-md-3 mt-10 ml-0">
+                    <span class="">
+                        <span class="text-success" data-status="ACCEPTED" data-id="">Booking No : </span>
+                        <a href="#" class="btn border-success text-success btn-flat btn-rounded btn-icon" onclick="statusChange(this)" data-status="CHECKIN" data-id="">5</a>
+                    </span>
+                </div>
+
+                <div class="col-md-1">
+                    <h4><img src="~/Content/Image/healthcare-and-medical (1).png" width="50" /></h4>
+                </div>
+
+
+
+
+            </div>
+        </div>
+    </div>
+
+    <div class="panel-custom-default pa-10 mt-20" id="div_statuscancel">
+        <div class="row">
+
+            <div class="col-md-12">
+
+                <div class="col-md-2">
+                    <span style="padding-top:10px"><img src="~/Content/Image/patient.png" style="width: 80px; height: 80px;" /></span>
+                </div>
+                <div class="col-md-3">
+                    <h4 class="h4">Kyaw Kyaw</h4>
+                    <span class="spantxt">22 yrs</span>
+                    <p class="ptxt">Appointment Time : </p>
+                </div>
+
+                <div class="col-md-3 mt-10">
+                    <span class="">
+                        <span class="text-success" data-status="ACCEPTED" data-id="">Status : </span>
+                        &nbsp;&nbsp;
+                        <a href="#" class="btn border-success text-success btn-flat btn-rounded btn-icon btn-xs" onclick="statusChange(this)" data-status="CHECKIN" data-id="">Booked</a>
+                        <br /><br />
+                        <a href="#" class="btn border-danger text-danger btn-flat btn-rounded btn-icon btn-xs" onclick="statusChange(this)" data-status="CHECKIN" data-id="">Cancel</a>
+                        &nbsp;&nbsp;
+                        <a href="#" class="btn border-warning text-warning btn-flat btn-rounded btn-icon btn-xs" onclick="statusChange(this)" data-status="CHECKIN" data-id="">Skip</a>
+                    </span>
+                </div>
+
+
+                <div class="col-md-3 mt-10 ml-0">
+                    <span class="">
+                        <span class="text-success" data-status="ACCEPTED" data-id="">Booking No : </span>
+                        <a href="#" class="btn border-success text-success btn-flat btn-rounded btn-icon" onclick="statusChange(this)" data-status="CHECKIN" data-id="">5</a>
+                    </span>
+                </div>
+
+                <div class="col-md-1">
+                    <h4><img src="~/Content/Image/healthcare-and-medical (1).png" width="50" /></h4>
+                </div>
+
+
+
+
+            </div>
+        </div>
+    </div>*@

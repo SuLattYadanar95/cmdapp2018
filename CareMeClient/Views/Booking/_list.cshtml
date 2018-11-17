@@ -1,0 +1,72 @@
+﻿@model Data.ViewModels.PagedListClient<Data.ViewModels.ScheduleBookingViewModel>
+@using PagedList;
+@using PagedList.Mvc;
+
+
+@{
+
+    if (Model.TotalCount > 0)
+    {
+
+
+        <div id="list_Binder">
+            @foreach (var list in Model.Results)
+            {
+                <div class="panel-custom-default pa-10 mt-5" id="div_Doctor_@list.doctor.ID">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="col-sm-2">
+                                <span><img src="@list.doctor.PhotoUrl" style="width: 80px; height: 80px;" /></span>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <h6 class="lh20 zawgyi_text">@list.doctor.Name</h6>
+                                <span class="lh20 text-muted zawgyi_text">@list.doctor.Specialty</span>
+                            </div>
+                           
+                           
+                            <div class="col-sm-6">
+                                <h6 class="lh20 zawgyi_text">@list.doctor.Qualification</h6>
+                                <span class="lh20 text-muted zawgyi_text">Qualification</span>
+                            </div>
+                            <div class="col-md-1 pull-right">
+                              <span class="glyphicon glyphicon-chevron-down" id="button-right" data-doctorID="@list.doctor.ID" data-doctorname="@list.doctor.Name" onclick="ScheduleListByDoctor(this)"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel-custom-default pa-10 mt-5" id="div_schedulebydoctor_@list.doctor.ID" style="display:none!important">
+                    <div class="div_schedulebydoctor_@list.doctor.ID">
+
+                    </div>
+                </div>
+            }
+        </div>
+        <br />
+        <div class="col-md-12">
+            <div class="pagedList" style="text-align:center">
+                @Html.PagedListPager(Model.Results, page => Url.Action("_doctor3list", "Doctor3",
+ new { page }), PagedListRenderOptions.ClassicPlusFirstAndLast)
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="panel-custom-default pa-10 mt-5">
+            <div class="row">
+                <div class="col-md-12" style="text-align:center">
+                    <h4>There is no search doctor list</h4>
+                    <h6>Add a new doctor.....</h6><button class="btn btn-primary btn-xs btn-rounded" onclick="addDoctor()">Add Doctor</button>
+                </div>
+            </div>
+        </div>
+    }
+}
+
+
+
+
+
+
+

@@ -1,0 +1,55 @@
+﻿<style>
+    .card {
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+    transition: 0.3s;
+    width: 95%;
+    background-color: rgb(255, 255, 255);
+    border-radius:10px;
+    padding:3px;
+    margin:3px;
+    cursor:pointer;
+}
+
+.card:hover {
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+}
+
+
+.sc {
+    height: 500px;
+    overflow: scroll;
+    width:95%;
+}
+
+</style>
+
+
+
+@model List<Data.Models.tbDoctor>
+
+    <div id="inner-content-div">
+
+    @foreach (var doctor in Model)
+    {
+       
+        <div class="card mt-10" onclick="timelist(this)" data-doctorid="@doctor.ID" data-datetime="">
+            <img class="card-img-top mt-5" src="@doctor.PhotoUrl" alt="Card image cap" style="width:25%;border-radius:50%;">
+            <span class="zawgyi_text">
+                @doctor.Name
+            </span>
+            <p class="card-text ml-5 mt-5">@doctor.Qualification</p>
+
+        </div>
+
+    }
+
+
+     </div>
+
+
+
+
+
+
+
+ 

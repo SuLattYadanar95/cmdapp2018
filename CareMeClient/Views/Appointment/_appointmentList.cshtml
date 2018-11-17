@@ -1,0 +1,104 @@
+﻿@model Data.ViewModels.PagedListClient<Data.Models.tbAppointment>
+@using PagedList;
+@using PagedList.Mvc;
+
+
+@{
+
+    if (Model.TotalCount > 0)
+    {
+        <div id="list_Binder">
+
+
+            @foreach (var list in Model.Results)
+            {
+                <div class="panel-custom-default pa-10 mt-20" id="div_statuscancel_@list.ID">
+                    <div class="row">
+
+                        <div class="col-md-12">
+                            @*<h6 style="position:absolute;top:-20px;left:0px;width:25px;height:25px;background:#00ffff;border-radius: 50px;">@list.Counter</h6>*@
+                            <div class="col-sm-2">
+                                <span style="padding-top:10px"><img src="~/Content/Image/patient.png" style="width: 80px; height: 80px;" /></span>
+                            </div>
+                            <div class="col-sm-3">
+                                <h4>@list.PatientName</h4>
+                                <h6>@list.PatientAge yrs</h6>
+                                <h6>Appointment Time : @list.AppointmentDateTime.Value.ToString("dd MMM yyyy") &nbsp; @list.AppointmentDateTime.Value.ToShortTimeString()</h6>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <h4>Booking No : @list.Counter</h4>
+                            </div>
+
+                            @{
+                                if (list.Status == null)
+                                {
+                                    <div class="col-sm-4">
+                                        <span class="pull-right" style="padding-top:10px">
+                                            <a href="#" class="btn border-success text-success btn-flat btn-rounded btn-icon btn-xs" onclick="statusChange(this)" data-status="ACCEPTED" data-id="@list.ID"><i class="icon-checkmark3"></i></a>
+                                            &nbsp;&nbsp;
+                                            <a href="#" class="btn border-danger text-danger btn-flat btn-rounded btn-icon btn-xs" onclick="statusChange(this)" data-status="CANCEL" data-id="@list.ID"><i class="icon-cross3"></i></a>
+                                        </span>
+                                    </div>
+                                }
+                                else if (list.Status == "ACCEPTED")
+                                {
+                                    <div class="col-sm-4">
+                                        <span class="pull-right" style="padding-top:10px">
+                                            <a href="#" class="btn border-success text-success btn-flat btn-rounded btn-icon btn-xs" onclick="statusChange(this)" data-status="CHECKIN" data-id="@list.ID">CHECKIN</a>
+                                            &nbsp;&nbsp;
+                                            <a href="#" class="btn border-danger text-danger btn-flat btn-rounded btn-icon btn-xs" onclick="statusChange(this)" data-status="CANCEL" data-id="@list.ID"><i class="icon-cross3"></i></a>
+                                           <br /><br/>
+                                            <span class="text-success" data-status="ACCEPTED" data-id="@list.ID">ACCEPTED</span>
+                                            &nbsp;&nbsp;
+                                            <span class="text-danger" data-status="WAITING" data-id="@list.ID">WAITING</span>
+                                         </span>
+                                    </div>
+                                }
+                                else if (list.Status == "CHECKIN")
+                                {
+                                    <div class="col-sm-4 pull-right">
+                                        <span class="pull-right" style="padding-top:10px">
+                                            <span class="text-success" data-status="CHECKIN" data-id="@list.ID">CHECKIN</span>
+                                            &nbsp;&nbsp;
+                                            <a href="#" class="btn border-danger text-danger btn-flat btn-rounded btn-icon btn-xs" onclick="statusChange(this)" data-status="CHECKOUT" data-id="@list.ID">CHECKOUT</a>
+                                        </span>
+                                    </div>
+                                }
+                            }
+                        </div>
+                    </div>
+                </div>
+                                }
+        </div>
+
+
+        <br /><br />
+        <div class="col-md-12">
+            <div class="pagedList" style="text-align:center">
+                @Html.PagedListPager(Model.Results, page => Url.Action("_list", "Appointment",
+                                                                                      new { page }), PagedListRenderOptions.ClassicPlusFirstAndLast)
+            </div>
+
+        </div>
+                                            }
+
+                                else
+                                {
+                                    <div class="panel-custom-default pa-10 mt-20">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <h4 style="text-align:center">......There is no booking list......</h4>
+                                                </div>
+                                            </div>
+                                        </div>
+                                                }
+                                }
+
+
+
+
+
+
+
+

@@ -1,0 +1,203 @@
+﻿@model List<Data.Models.tbScheduleData>
+
+<div class="carousel-inner">
+
+    <div class="item active">
+        <div class="container-fluid pb-20">
+            <div class="table-responsive">
+                <table class="table" width="100%">
+                    <thead>
+                        <tr>
+
+                            @{
+
+                            }
+
+                            @if (ViewBag.Type != null)
+                            {
+                                DateTime date = ViewBag.appDate;
+                                for (var i = 0; i < 7; i++)
+                                {
+                                    <th class="mr-10">
+                                        <text>@date.AddDays(i).ToString("dd MMM yyyy")</text>
+                                    </th>
+                                }
+                            }
+                            else
+                            {
+                                var today = Core.Extensions.MyExtension.getLocalTime(DateTime.UtcNow).Date;
+                                for (var i = 0; i < 7; i++)
+                                {
+                                    <th class="mr-10">
+                                        <text>@today.AddDays(i).ToString("dd MMM yyyy")</text>
+                                    </th>
+                                }
+                            }
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (ViewBag.Type != null)
+                        {
+                            <tr>
+                                @{
+                                    DateTime date_bd = ViewBag.appDate;
+                                }
+                                @for (var i = 0; i < 7; i++)
+                                {
+                                    var fromdate = date_bd.AddDays(i).Date;
+                                    var todate = date_bd.AddDays(i + 1).Date;
+
+                                    var schdata = Model.Where(a => a.AppointmentDatetime >= fromdate && a.AppointmentDatetime < todate).ToList();
+
+                                    if (schdata.Count() > 0)
+                                    {
+                                        <td class="mr-10" style="vertical-align: top!important;">
+                                            @foreach (var item in schdata)
+                                            {
+                                                <div id="deletescheduleby_@item.ID">
+                                                    <div class="m-5 panel-custom-default pa-10" style="background-color:#fcfcfc!important">
+                                                        <div class="row">
+                                                            <div class="col-xs-9">
+
+                                                                <span>@item.Fromtime.Value.ToShortTimeString()</span><br />
+                                                                <span>@item.Totime.Value.ToShortTimeString()</span>
+                                                            </div>
+                                                            <div class="col-xs-3 pa-0">
+                                                                <span class="btn icon-trash text-danger" data-scheduleid="@item.ID" onclick="scheduledetaildelete(this)"></span>
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    </div>
+                                                    <div class="clearfix"></div>
+                                                    }
+</td>
+                                    }
+                                    else
+                                    {
+                                        <td class="mr-10"> </td>   }
+                                }
+                            </tr>
+                                    }
+                                    else
+                                    {
+                                        <tr>
+                                            @{
+                                                var today_bd = Core.Extensions.MyExtension.getLocalTime(DateTime.UtcNow).Date;
+                                            }
+                                            @for (var i = 0; i < 7; i++)
+                                            {
+                                                var fromdate = today_bd.AddDays(i).Date;
+                                                var todate = today_bd.AddDays(i + 1).Date;
+
+                                                var schdata = Model.Where(a => a.AppointmentDatetime >= fromdate && a.AppointmentDatetime < todate).ToList();
+                                                if (schdata.Count() > 0)
+                                                {
+                                                    <td class="mr-10" style="vertical-align: top!important;">
+                                                        @foreach (var item in schdata)
+                                                        {
+                                                            <div id="deletescheduleby_@item.ID">
+                                                                <div class="m-5 panel-custom-default pa-10" style="background-color:#fcfcfc!important" id="">
+                                                                    <div class="row">
+                                                                        <div class="col-xs-9">
+
+                                                                            <span>@item.Fromtime.Value.ToShortTimeString()</span><br />
+                                                                            <span>@item.Totime.Value.ToShortTimeString()</span>
+                                                                        </div>
+                                                                        <div class="col-xs-3 pa-0">
+                                                                            <span class="btn icon-trash text-danger" data-scheduleid="@item.ID" onclick="scheduledetaildelete(this)"></span>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                         
+                                                            <div class="clearfix"></div>
+                                                        }
+                                                    </td>
+                                                }
+                                                else
+                                                {
+                                                    <td class="mr-10"> 
+                                                       
+                                                    </td>  
+
+
+                                                }
+                                            }
+                                        </tr>
+                                                }
+
+
+                    </tbody>
+                </table>
+
+            </div>
+
+        </div>
+    </div>
+
+    @{
+        var appointmentDate = ViewBag.appDate;
+        if (Model.Count > 0)
+        {
+
+            var firstobj = Model.FirstOrDefault();
+            var lastobj = Model.LastOrDefault();
+            <button data-docid="@Model.FirstOrDefault().DoctorID"
+                    data-appdate="@appointmentDate"
+                    data-hospitalID="@firstobj.HospitalID"
+                    onclick="prev(this)" class="left carousel-control" href="" data-slide="prev" style="width:0%;background-image:none;border:none">
+                <span class="glyphicon glyphicon-chevron-left"></span>
+                <span class="sr-only">Previous</span>
+            </button>
+            <button data-docid="@Model.FirstOrDefault().DoctorID"
+                    data-appdate="@appointmentDate"
+                    data-hospitalID="@firstobj.HospitalID"
+                    onclick="next(this)" class="right carousel-control" href="" data-slide="next" style="width:0%;background-image:none;border:none">
+                <span class="glyphicon glyphicon-chevron-right"></span>
+                <span class="sr-only">Next</span>
+            </button>
+
+        }
+        else
+        {
+            <button data-docid="@ViewBag.doctorid"
+                    data-appdate="@appointmentDate"
+                    data-hospitalID="@ViewBag.hospitalid"
+                    onclick="prev(this)" class="left carousel-control" href="" data-slide="prev" style="width:0%;background-image:none;border:none">
+                <span class="glyphicon glyphicon-chevron-left"></span>
+                <span class="sr-only">Previous</span>
+            </button>
+            <button data-docid="@ViewBag.doctorid"
+                    data-appdate="@appointmentDate"
+                    data-hospitalID="@ViewBag.hospitalid"
+                    onclick="next(this)" class="right carousel-control" href="" data-slide="next" style="width:0%;background-image:none;border:none">
+                <span class="glyphicon glyphicon-chevron-right"></span>
+                <span class="sr-only">Next</span>
+            </button>
+
+        }
+
+
+    }
+
+</div>
+
+
+@section scripts{
+    <script>
+     
+
+
+
+    </script>
+    
+    
+    
+    
+    
+    }
+
+
+
+

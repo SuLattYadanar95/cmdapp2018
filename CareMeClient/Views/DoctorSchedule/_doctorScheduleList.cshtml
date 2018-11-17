@@ -1,0 +1,98 @@
+﻿@model Data.ViewModels.PagedListClient<Data.ViewModels.DoctorHospitalViewModel>
+@using PagedList;
+@using PagedList.Mvc;
+
+
+@{
+
+    if (Model.TotalCount > 0)
+    {
+
+
+        <div id="list_Binder">
+            @foreach (var list in Model.Results)
+            {
+                <div class="panel-custom-default pa-10 mt-5" id="div_Doctor_@list.doctor.ID">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="col-sm-2">
+                                <span><img src="@list.doctor.PhotoUrl" style="width: 80px; height: 80px;border-radius:10px" /></span>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <h6 class="lh20 zawgyi_text">@list.doctor.Name</h6>
+                                <span class="lh20 text-muted zawgyi_text">@list.doctor.Specialty</span>
+                            </div>
+                            
+                            @*<div class="col-sm-1">
+                                <h6 class="lh15">@list.doctor.Type</h6>
+                                <span class="lh10 text-muted">Type</span>
+                            </div>*@
+                            <div class="col-sm-4">
+                                <h6 class="lh20 zawgyi_text">@list.doctor.Qualification</h6>
+                                
+                            </div>
+                            <div class="col-sm-3">
+                                <button class="btn btn-primary btn-xs btn-rounded pull-right" id="doctorid" style="margin-left:5px" data-hospitalid="@list.hospital.HospitalID" data-hospitalname="@list.hospital.HospitalName" data-doctorID="@list.doctor.ID" data-doctorname="@list.doctor.Name" onclick="Schedule(this)">Schedule</button>
+                                <button class="btn btn-primary btn-xs btn-rounded pull-right" style="margin-left:5px" data-ID="@list.doctor.ID" onclick="EditDoctor(this)">Edit</button>
+
+
+                                @*<button class="btn btn-warning btn-xs btnr5" data-ID="@list.ID" onclick="DeleteDoctor(this)">Delete</button>*@
+
+                                <button type="button" class="btn btn-danger btn-xs btn-rounded pull-right" style="margin-left:5px"
+                                        data-roleid="@list.doctor.ID"
+                                        data-action="@Url.Action("doctordelete", "DoctorSchedule")"
+                                        data-modalid="modal_delete"
+                                        data-id="@list.doctor.ID"
+                                        @{var infoid = "div_Doctor_" + list.doctor.ID; }
+                                        data-infoid="@infoid"
+                                        onclick="deleteconfirmation(this)">
+                                    @*<span class="glyphicon glyphicon-trash"></span>*@
+                                    Delete
+                                </button>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="panel-custom-default pa-10 mt-5" id="div_scheduleby_@list.doctor.ID" style="display:none!important">
+                    <div id="div_schedulebyone_@list.doctor.ID">
+                        
+
+                        <div class="mt-20">
+                            <img src="~/Content/Image/hospital1.png" style="width:25px;height:25px;" />
+                            <span class="lh10 text-muted ml-10">HOSPITAL OR CLINIC NAME : <Label class="lh15 zawgyi_text" style="color:#080000">@list.hospital.HospitalName</Label> </span>
+                            <button class="btn btn-success btn-xs btn-rounded pull-right" data-doctorid="@list.doctor.ID" data-hospitalid="@list.hospital.HospitalID" data-doctorname="@list.doctor.Name" data-hospitalname="@list.hospital.HospitalName" onclick="addSchedule2(this)">Add New Schedule</button>
+                        </div>
+
+                        <hr />
+                    </div>
+
+                    <div id="schedule_@list.doctor.ID">
+
+                    </div>
+                </div>
+    }
+        </div>
+        <br />
+        <div class="col-md-12">
+            <div class="pagedList" style="text-align:center">
+                @Html.PagedListPager(Model.Results, page => Url.Action("_doctorScheduleList", "DoctorSchedule",
+ new { page }), PagedListRenderOptions.ClassicPlusFirstAndLast)
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="panel-custom-default pa-10 mt-5">
+            <div class="row">
+                <div class="col-md-12" style="text-align:center">
+                    <h4>There is no search doctor list</h4>
+                    <h6>Add a new doctor.....</h6><button class="btn btn-primary btn-xs btn-rounded" onclick="addDoctor()">Add Doctor</button>
+                </div>
+            </div>
+        </div>
+    }
+}

@@ -1,0 +1,88 @@
+﻿@model Data.ViewModels.PagedListClient<Data.Models.tbHospital>
+@using PagedList;
+@using PagedList.Mvc;
+
+
+@{
+
+    if (Model.TotalCount > 0)
+    {
+
+
+        <div id="list_Binder">
+            @foreach (var list in Model.Results)
+            {
+                <div class="panel-custom-default pa-10 mt-5" id="div_hospital_@list.ID">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="col-sm-2">
+                                <span><img src="@list.PhotoUrl" style="width: 80px; height: 80px;" /></span>
+                            </div>
+
+                            <div class="col-sm-2">
+                                <h6 class="lh15 zawgyi_text">@list.Name</h6>
+                                <span class="lh10 text-muted zawgyi_text">Name</span>
+                            </div>
+                            <div class="col-sm-2">
+                                <h6 class="lh15 zawgyi_text">@list.Township</h6>
+                                <span class="lh10 text-muted zawgyi_text">Township</span>
+                                <h6 class="lh15 zawgyi_text">@list.State</h6>
+                                <span class="lh10 text-muted zawgyi_text">State</span>
+                            </div>
+                            @*<div class="col-sm-1">
+                                <h6 class="lh15">@list.State</h6>
+                                <span class="lh10 text-muted">State</span>
+                            </div>*@
+                            <div class="col-sm-4">
+                                <h6 class="lh15 zawgyi_text">@list.Address</h6>
+                                <span class="lh10 text-muted zawgyi_text">Address</span>
+                            </div>
+                            <div class="col-sm-2">
+                              
+                                <button class="btn btn-primary btn-xs btn-rounded" data-ID="@list.ID" onclick="EditHospital(this)">Edit</button>
+
+
+                                @*<button class="btn btn-warning btn-xs btnr5" data-ID="@list.ID" onclick="DeleteDoctor(this)">Delete</button>*@
+
+                                <button type="button" class="btn btn-danger btn-xs btn-rounded"
+                                        data-roleid="@list.ID"
+                                        data-action="@Url.Action("hospitaldelete", "Hospital")"
+                                        data-modalid="modal_delete"
+                                        data-id="@list.ID"
+                                        @{var infoid = "div_hospital_" + list.ID; }
+                                        data-infoid="@infoid"
+                                        onclick="deleteconfirmation(this)">
+                                    @*<span class="glyphicon glyphicon-trash"></span>*@
+                                    Delete
+                                </button>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+             
+    }
+        </div>
+        <br />
+        <div class="col-md-12">
+            <div class="pagedList" style="text-align:center">
+                @Html.PagedListPager(Model.Results, page => Url.Action("_hospitalList", "Hospital",
+ new { page }), PagedListRenderOptions.ClassicPlusFirstAndLast)
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="panel-custom-default pa-10 mt-5">
+            <div class="row">
+                <div class="col-md-12" style="text-align:center">
+                    <h4>There is no search hospital list</h4>
+                    <h6>Add a new doctor.....</h6><button class="btn btn-primary btn-xs btn-rounded" onclick="addHospital()">Add Hospital</button>
+                </div>
+            </div>
+        </div>
+    }
+}
+

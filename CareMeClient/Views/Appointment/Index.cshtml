@@ -1,0 +1,184 @@
+﻿<div class="mt-20">
+    <div class="navbar  navbar-component fs14" style="position: relative; z-index: 18;">
+
+
+        <div class="navbar-header">
+            <button class="btn btn-default mt-5 btnr5" onclick="statusFilter(' ')">ALL</button>
+            <button class="btn btn-default mt-5 btnr5" onclick="statusFilter('ACCEPTED')">ACCEPTED</button>
+            <button class="btn btn-default mt-5 btnr5" onclick="statusFilter('CHECKIN')">CHECKIN</button>
+            <button class="btn btn-default mt-5 btnr5" onclick="statusFilter('ACCEPTED')">WAITING</button>
+
+    
+          
+
+        </div>            
+                <div class="navbar-collapse collapse" id="navbar-form-select2">                 
+                    <form class="navbar-form navbar-right">
+                        <div class='col-md-4 input-group date' id='dtpickerdemo'>
+                            <input type='text' data-format="yyyy-MM-dd hh:mm:ss" class="form-control" id="pickerdemo" />
+                            <span class="input-group-addon">
+                                <span class="glyphicon glyphicon-calendar"></span>
+                            </span>
+                        </div>
+                        <div class="form-group">
+                            <div class="input-group">
+                                <input type="text" class="form-control" placeholder="Search for..." name="q" id="txt_itemName">
+                                <span class="input-group-btn">
+                                    <button class="btn btn-default" type="button" onclick="Search()">Go!</button>
+                                </span>
+                            </div><!-- /input-group -->
+
+                        </div>
+                    </form>
+
+                    @*<ul class="nav navbar-nav navbar-right">
+                            <li class="dropdown dropdown-user">
+                                <a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                    <img src="assets/images/placeholder.jpg" alt="">
+                                    <i class="icon-filter3"></i>
+                                    <span>Status</span>
+                                    <i class="caret"></i>
+                                </a>
+
+                                <ul class="dropdown-menu dropdown-menu-right">
+                                    <li><a href="#"><i class="icon-code"></i> V-Code</a></li>
+                                    <li><a href="#"><i class="icon-user"></i> Customer</a></li>
+                                    <li><a href="#"><i class="icon-mobile"></i> Phone</a></li>
+                                    <li><a href="#"><i class="icon-power-cord"></i> Status</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                        <ul class="nav navbar-nav navbar-right">
+                            <li class="dropdown dropdown-user">
+                                <a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                    <img src="assets/images/placeholder.jpg" alt="">
+                                    <i class="icon-list-ordered"></i>
+                                    <span>Accesstime</span>
+                                    <i class="caret"></i>
+                                </a>
+
+                                <ul class="dropdown-menu dropdown-menu-right">
+                                    <li><a href="#"><i class="icon-code"></i> V-Code</a></li>
+                                    <li><a href="#"><i class="icon-user"></i> Customer</a></li>
+                                    <li><a href="#"><i class="icon-mobile"></i> Phone</a></li>
+                                    <li><a href="#"><i class="icon-power-cord"></i> Status</a></li>
+                                </ul>
+                            </li>
+                        </ul>*@
+
+
+                </div>
+                <div id="div_List">
+                    <div id="loading" style="text-align:center">
+                        <img src="~/Content/Image/Spinner-1s-200px.gif" width="200" height="200" />
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        @section scripts{
+            <script type="text/javascript">
+                var page = 1;
+                var pagesize = 10;
+                var name;
+                var status;
+                var datetime;
+                $(function () {
+                    LoadMainList();
+                    initPaging();
+                
+
+                });
+
+                $(function () {
+                    $('#dtpickerdemo').datetimepicker({
+                        format: 'YYYY-MM-DD HH:mm A'
+                    });
+                    //$('#dtpickerdemo').on('dp.change', function () {
+                    //    console.log("haha" + $("#pickerdemo").val());
+                    //    datetime = $("#pickerdemo").val();
+                    //    Search();
+                    //});
+                 
+                });
+
+
+                function initPaging() {
+                    $("#div_List").on("click", ".pagedList a", function (e) {
+                        e.preventDefault();
+                        var $a = $(this).attr("href");
+                        try {
+                            var pageurl = $a.split(/=/);
+                            page = pageurl[1];
+                            if (page == null) {
+                                page = 1;
+                            }
+                        }
+                        catch (e) {
+                            page = 1;
+                        }
+                        LoadMainList();
+                    });
+                }
+
+                function statusFilter(e) {
+                    status = e;
+                    Search();
+                }
+
+                function statusChange(e) {
+                    var id = $(e).attr('data-id');
+                    var statuschange = $(e).attr('data-status');
+                    if (statuschange == "CANCEL" || statuschange == "CHECKOUT") {
+                        $('#div_statuscancel_' + id).remove();
+                    }
+                    $('#loading').show();
+                    $.ajax({
+                        cache: false,
+                        url: '@Url.Action("_statusChange", "Appointment")',
+                        data: { id: id, statuschange: statuschange },
+                        beforeSend: function () {
+
+                        },
+                        success: function (result) {
+
+                        },
+                        complete: function () {
+                            $('#loading').hide();
+                            LoadMainList();
+                        }
+                    });
+                }
+
+                function Search() {
+                    name = $('#txt_itemName').val();
+                    datetime = $("#pickerdemo").val();
+                    //categoryId = $('#DDD_category').val();
+                    //subcategoryId = $('#DDD_subcategory').val();
+                    //brandId = $('#DDD_brand').val();
+                    LoadMainList();
+                }
+
+                function LoadMainList() {
+                    $('#loading').show();
+                    $.ajax({
+                        cache: false,
+                        url: '@Url.Action("_list", "Appointment")',
+                        data: { name: name, status: status, pagesize: pagesize, page: page,datetime:datetime },
+                        beforeSend: function () {
+
+                        },
+                        success: function (result) {
+                            $('#div_List').empty().append(result);
+                        },
+                        complete: function () {
+                            $('#loading').hide();
+                        }
+                    });
+                }
+
+
+            </script>
+        }
+
+

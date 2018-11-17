@@ -1,0 +1,50 @@
+﻿.h4{
+    font-family: 'Roboto', sans-serif;
+    font-size:18px;
+    color : #050505;
+}
+
+.spantxt{
+    font-family: 'Roboto', sans-serif;
+    font-size:15px;
+    color : #050505;
+}
+
+.ptxt{
+     font-family: 'Roboto', sans-serif;
+    font-size:15px;
+     color : #050505;
+}
+
+
+/*datetimepicker*/
+  .dropdown-menu {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        z-index: 4000 !important;
+        display: none;
+        min-width: 160px;
+        padding: 5px 0;
+        margin: 2px 0 0;
+        list-style: none;
+        font-size: 13px;
+        text-align: left;
+        background-color: #fff;
+        border: 1px solid #ddd;
+        border-radius: 3px;
+        -webkit-box-shadow: 0 6px 12px rgba(0,0,0,.175);
+        box-shadow: 0 6px 12px rgba(0,0,0,.175);
+        background-clip: padding-box;
+    }
+
+    
+  
+    
+
+
+
+
+
+   
+  

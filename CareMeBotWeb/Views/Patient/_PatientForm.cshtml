@@ -1,0 +1,110 @@
+﻿
+@model Data.Models.tbPatient
+
+@using (Html.BeginForm("UpsertPatient", "Doctor3", FormMethod.Post, new { id = "PatientForm" }))
+{
+
+    <div class="">
+        <h4>
+            Fill your information<br />
+            <small>Make booking for <span class="txt_date text-bold"></span></small>
+        </h4>
+    </div>
+
+
+
+    <input type="hidden" name="" id="doctorid" value="@ViewBag.doctorid" />
+        <input type="hidden" name="" id="doctorname" value="@ViewBag.doctorname" />
+        <input type="hidden" name="" id="appdate" value="@ViewBag.appdate" />
+        <input type="hidden" name="" id="fromtime" value="@ViewBag.fromtime" />
+        <input type="hidden" name="" id="totime" value="@ViewBag.totime" />
+        <input type="hidden" name="" id="scheduleid" value="@ViewBag.scheduleid" />
+
+        <div class="" id="mb">
+            <div class="row">
+                <div class="">
+                    <div class="col-sm-6">
+                        <label>Name</label>&nbsp;<span class="text-danger">*</span>
+                        @Html.TextBoxFor(a => a.Name, new { placeholder = "", @class = "form-control", @required = "required" })
+
+                    </div>
+                    <div class="col-sm-6">
+                        <label>Phone</label>&nbsp;<span class="text-danger">*</span>
+                        @Html.TextBoxFor(a => a.Phone, new { placeholder = "", @class = "form-control", @required = "required" })
+
+                    </div>
+                </div>
+            </div>
+            <br />
+
+            <div class="row">
+                <div class="">
+                    <div class="col-sm-6">
+                        <label>Age</label>&nbsp;<span class="text-danger">*</span>
+                        @Html.TextBoxFor(a => a.Age, new { placeholder = "", @class = "form-control", @required = "required" })
+
+                    </div>
+                    <div class="col-sm-6">
+                        <label>Gender</label>&nbsp;<span class="text-danger">*</span>
+                        @{ var type = new List<SelectListItem>() {
+                                       new SelectListItem {Value="", Text="-- Select --" },
+                                       new SelectListItem {Value="Female", Text="Female" },
+                                       new SelectListItem {Value="Male", Text="Male" }
+                                    };
+                        }
+                        @Html.DropDownListFor(a => a.Gender, type, new { @class = "form-control", name = "select", @required = "required" })
+
+                    </div>
+                </div>
+            </div>
+            <br />
+
+            <div class="row">
+                <div class="">
+                    <div class="col-sm-12">
+                        <label>Address</label>&nbsp;<span class="text-danger">*</span>
+                        @Html.TextAreaFor(a => a.Address, new { placeholder = "", @class = "form-control", @required = "required" })
+                    </div>
+                </div>
+            </div>
+            <br />
+            <div class="row">
+                <div class="">
+                    <div class="col-sm-12">
+                        <label>Problem</label>&nbsp;<span class="text-danger">*</span>
+                        @Html.TextAreaFor(a => a.Problem, new { placeholder = "", @class = "form-control", @required = "required" })
+                    </div>
+                </div>
+            </div>
+            <br />
+            <div class="row">
+                <div class="col-sm-12">
+                    <div>
+                        <div>
+                            <button type="button" class="btn btn-default btn-rounded" onclick="cancelBooking()">Cancel</button>
+                            <button type="submit" class="btn btn-primary btn-rounded" id=""><span class="icon-add"></span> Book now</button>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+        @Html.HiddenFor(m => m.ID)
+                            @Html.HiddenFor(m => m.Photo)
+                            @Html.HiddenFor(m => m.IsDeleted)
+                            @Html.HiddenFor(m => m.Accesstime)
+                            @Html.HiddenFor(m => m.MsgrID)
+                            @Html.HiddenFor(m => m.MsgrName)
+
+
+
+
+                            }
+
+
+
+
+
+

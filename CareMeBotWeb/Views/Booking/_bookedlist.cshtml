@@ -1,0 +1,14 @@
+﻿@model IEnumerable<Data.Models.tbAppointment>
+
+
+@foreach(var item in Model)
+{
+    <div class="panel-custom-default pa-10">
+        <h5 class="zawgyi_text">Name: @item.PatientName_ZG</h5>
+        <h6>Date: @item.AppointmentDateTime.Value.ToString("dd MMM yyyy") @item.AppointmentDateTime.Value.ToShortTimeString()</h6>
+        <h6 class="zawgyi_text">Location: @item.HospitalName_ZG</h6>
+        <h6 class="zawgyi_text">Doctor: @item.DoctorName_ZG</h6>
+    </div>
+
+
+}

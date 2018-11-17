@@ -1,0 +1,276 @@
+﻿@model List<Data.Models.tbDoctor>
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section css{
+    <style>
+    .progress-meter {
+        cursor: pointer !important;
+       
+    }
+    .progress-meter:hover {
+      
+    }
+
+    
+</style>
+    
+    }
+
+
+
+
+<div class="mt-20">
+    <div class="navbar  navbar-component fs14" style="position: relative; z-index: 18;">
+        <div class="col-md-12">
+            <div class="col-md-3 pa-0 " style="float:left">
+                <h3 class="lh10 mt-5">Patient Appointments</h3>
+                <small>Manage patient appointments</small>
+            </div>
+            <div class="col-md-3" style="float:right">
+                <div class="form-group">
+                    <div class="input-group">
+                        <label>&ensp;</label>
+                        <input type="text" class="form-control" placeholder="Search for..." name="q" id="txt_name">
+                        <span class="input-group-btn">
+                            <button class="btn btn-default" style="margin-top:27px" type="button" onclick="Search()">Go!</button>
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3" style="float:right">
+                <label>Doctor</label>
+                <select name="doctorID" id="DD_Doctor" class="form-control zawgyi_text">
+                    <option value="0">Choose Doctor</option>
+                </select>
+                @*<input type="hidden" name="State" id="state" value="" />*@
+
+                @*<select name="doctorID" id="DD_Doctor" class="form-control">
+                        <option value="0">Select Doctor</option>
+                        @foreach (var doctor in Model)
+                        {
+                            <option value="@doctor.ID">@doctor.Name</option>
+                        }
+                    </select>*@
+            </div>
+
+
+            <div class="col-md-3" style="float:right">
+                <label>Appointment Date</label>
+                <div class="input-group">
+                   
+                    <input type="text" class="form-control daterange-single" id="datetime" value="">
+                    <span class="input-group-addon"><i class="icon-calendar22"></i></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="navbar-collapse collapse">
+            <div class="col-md-6" style="float:right" id="div_time">
+
+            </div>
+        </div>
+
+        <div id="div_List">
+            @*<div id="loading" style="text-align:center">
+                    <img src="~/Content/Image/Spinner-1s-200px.gif" width="200" height="200" />
+                </div>*@
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModal-label" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div id="Schedule">
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="myModal1" tabindex="-1" role="dialog" aria-labelledby="myModal-label" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div id="Schedule1">
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts{
+    <script>
+        var page = 1;
+        var pagesize = 10;
+        var name;
+        var status;
+        var datetime;
+        var time;
+        var doctorid;
+        var doctorname;
+        var hospitalid;
+
+        $(function () {
+            initPaging();
+          
+
+            $('#datetime').change(function () {
+                $('#div_time').empty();
+
+                datetime = $('#datetime').val();
+                bindDoctorDD();
+                //LoadMainList();
+            });
+
+         $('.daterange-single').daterangepicker({
+             singleDatePicker: true
+         });
+
+         datetime = $("#datetime").val();
+         LoadMainList();
+        });
+
+        function btntime(e) {
+            time = $(e).attr('data-datetime');
+            console.log("========================   " + time);
+            LoadMainList();
+        }
+
+        function LoadMainList() {
+            //   $('#loading').show();
+            datetime = $("#datetime").val();
+            console.log(datetime);
+            $.ajax({
+                cache: false,
+                url: '@Url.Action("_appointmentBookinglist", "AppointmentBooking")',
+                data: { name: name, status: status, pagesize: pagesize, page: page, datetime: datetime, time: time, hospitalid: hospitalid, doctorid: doctorid },
+                beforeSend: function () {
+
+                },
+                success: function (result) {
+                    $('#div_List').empty().append(result);
+                },
+                complete: function () {
+                    $('#loading').hide();
+                    $('#txt_name').val("");
+                    //$('#datetime').val("");
+                }
+            });
+        }
+
+
+        //New
+
+
+        function bindDoctorDD() {
+            $.ajax({
+                cache: false,
+                url: '@Url.Action("doctorlist", "AppointmentBooking")',
+                data: { hospitalid: hospitalid, datetime: datetime},
+                beforeSend: function () {
+
+                },
+                success: function (result) {
+                    $('#DD_Doctor').empty();
+                    $('#DD_Doctor').append('<option value="">Choose Doctor</option>');
+                    for (var i = 0; i < result.length; i++) {
+                        $('#DD_Doctor').append('<option value="' + result[i].ID + '" class="zawgyi_text">' + result[i].Name + '</option>')
+                    };
+                    $('#DD_Doctor').on('change', function () {
+                        doctorname = $('#DD_Doctor :selected').text();
+                        doctorid = $('#DD_Doctor').val();
+                        timelist();
+                       // LoadMainList();
+                    });
+                },
+                complete: function () {
+                }
+            });
+        }
+
+
+        function timelist() {
+            console.log(datetime + "time");
+         $.ajax({
+             cache: false,
+             url: '@Url.Action("timelist", "AppointmentBooking")',
+             data: { doctorid: doctorid, datetime: datetime },
+             beforeSend: function () {
+
+             },
+             success: function (result) {
+                 $('#div_time').empty();
+                 $('#div_time').empty().append(result)
+                 //for (var i = 0; i < result.length; i++) {
+                  
+                 //    //$('#div_time').append('<div class="icheckbox" style="margin-right:3px"><input style="display:none" id="' + result[i].AppointmentDatetime + '-seat-checkbox" type="radio" data-datetime = "' + moment(result[i].AppointmentDatetime).format('DD-MMM-YYYY h:mm:ss a') + '" onchange="btntime(this)"  class="hide-checkbox setdate-radio" name="SetDate1"><label for="' + result[i].AppointmentDatetime + '-seat-checkbox">' + moment(result[i].Fromtime).format("LT") + ' : ' + moment(result[i].Totime).format("LT") + ' </label></div>');
+                 //};
+
+             },
+             complete: function () {
+
+             }
+         });
+     }
+
+     function initPaging() {
+         $("#div_List").on("click", ".pagedList a", function (e) {
+             e.preventDefault();
+             var $a = $(this).attr("href");
+             try {
+                 var pageurl = $a.split(/=/);
+                 page = pageurl[1];
+                 if (page == null) {
+                     page = 1;
+                 }
+             }
+             catch (e) {
+                 page = 1;
+             }
+             LoadMainList();
+         });
+     }
+
+     function statusFilter(e) {
+         status = e;
+         Search();
+     }
+
+
+     function Search() {
+         name = $('#txt_name').val();
+         datetime = $("#datetime").val();
+         LoadMainList();
+     }
+
+
+
+        function newstatusChange(e) {
+            var id = $(e).attr('data-id');
+            var statuschange = $(e).attr('data-status');
+            if (statuschange == "CANCEL" || statuschange == "CHECKOUT") {
+                $('#div_statuscancel_' + id).remove();
+            }
+          //  $('#loading').show();
+            $.ajax({
+                cache: false,
+                url: '@Url.Action("_newstatusChange", "AppointmentBooking")',
+                data: { id: id, statuschange: statuschange },
+                beforeSend: function () {
+
+                },
+                success: function (result) {
+
+                },
+                complete: function () {
+                 //   $('#loading').hide();
+                    LoadMainList();
+                }
+            });
+        }
+
+
+    </script>
+}

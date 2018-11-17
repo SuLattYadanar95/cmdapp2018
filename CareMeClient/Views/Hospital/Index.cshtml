@@ -1,0 +1,398 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="mt-20">
+    <div class="navbar  navbar-component fs14" style="position: relative; z-index: 18;">
+
+
+        <div class="col-md-3" style="float:right">
+            <div class="form-group">
+                <div class="input-group">
+                    <input type="text" class="form-control" placeholder="Search for..." name="q" id="txt_doctorName" autocomplete="off">
+                    <span class="input-group-btn">
+                        <button class="btn btn-default" type="button" onclick="Search()">Go!</button>
+                    </span>
+                </div><!-- /input-group -->
+
+            </div>
+        </div>
+
+
+        <div class="" style="float:right">
+            <button class="btn btn-primary btn-xs btn-rounded" onclick="addHospital()">Add Hospital</button>&nbsp;
+        </div>
+    </div>
+</div>
+
+
+
+
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModal-label" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div id="Hospital">
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<div id="modal_delete" class="modal fade in" style="display: none; padding-right: 17px;">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">×</button>
+                <h5 class="modal-title" id="delete_title_info">Delete Confirmation</h5>
+            </div>
+
+            <div class="modal-body">
+                <h6 class="text-semibold" id="delete_body_title_info">Are you sure to delete?</h6>
+                <p id="delete_body_info">If you are sure to delete this, click 'Delete' and note that it is irreversible in action.</p>
+
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-link legitRipple" data-dismiss="modal">Close</button>
+                <button type="button" id="btn_delete" onclick="deleteEntity(this)" data-action="" data-id="" data-info-id="" data-modal-id="" class="btn btn-primary legitRipple">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@*@Html.Partial("_doctorScheduleList");*@
+
+<div id="div_List">
+    <div id="loading" style="text-align:center">
+        <img src="~/Content/Image/Spinner-1s-200px.gif" width="200" height="200" />
+    </div>
+</div>
+
+@section scripts{
+    <script type="text/javascript">
+        var page = 1;
+        var pagesize = 10;
+        var hospitalid;
+        var hospitalname;
+        $(function () {
+            LoadMainList();
+            initPaging();
+        
+        });
+
+        //$(function () {
+        //    $('#dtpickerdemo').datetimepicker({
+        //        format: 'YYYY-MM-DD HH:mm A'
+        //    });
+        //    $('#dtpickerdemo').on('dp.change', function () {
+        //        console.log("haha" + $("#pickerdemo").val());
+        //        datetime = $("#pickerdemo").val();
+        //        Search();
+        //    });
+
+        //});
+
+
+        function initPaging() {
+            $("#div_List").on("click", ".pagedList a", function (e) {
+                e.preventDefault();
+                var $a = $(this).attr("href");
+                try {
+                    var pageurl = $a.split(/=/);
+                    page = pageurl[1];
+                    if (page == null) {
+                        page = 1;
+                    }
+                }
+                catch (e) {
+                    page = 1;
+                }
+                LoadMainList();
+            });
+        }
+
+
+
+         function Search() {
+              hospitalname = $('#txt_doctorName').val();
+              LoadMainList();
+          }
+
+        function LoadMainList() {
+            $('#loading').show();
+            $.ajax({
+                cache: false,
+                url: '@Url.Action("_hospitalList", "Hospital")',
+                data: { hospitalname: hospitalname, pagesize: pagesize, page: page},
+                beforeSend: function () {
+
+                },
+                success: function (result) {
+                    $('#div_List').empty().append(result);
+                },
+                complete: function () {
+                    $('#loading').hide();
+                }
+            });
+        }
+
+
+
+
+      
+        function ShowImagePreviewHospital(imageUploader, previewImage) {
+            if (imageUploader.files && imageUploader.files[0]) {
+                var files = $("#filedata").get(0).files;
+                var file = files[0];
+
+                var img = document.createElement("img");
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    $(previewImage).attr('src', e.target.result);
+                    img.src = e.target.result;
+                    var mime_type = "image/jpeg";
+                    if (typeof output_format !== "undefined" && output_format == "png") {
+                        mime_type = "image/png";
+                    }
+                    var canvas = document.createElement("canvas");
+                    if (navigator.userAgent.toLowerCase().indexOf('firefox') > -1) {
+                        alert('Photo is uploading...');
+                    }
+                    //set max height width
+                    var gg = maxwidthheight(img.width, img.height);
+                    width = gg.width;
+                    height = gg.height;
+                    canvas.width = width;
+                    canvas.height = height;
+                    var ctx = canvas.getContext("2d");
+                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                    var dataurl = canvas.toDataURL(mime_type, 60 / 100);
+                    //document.getElementById('image').src = dataurl;
+                    var blob = dataURItoBlob(dataurl);
+                    console.log("blob" + dataurl);
+
+                    reader.onloadend = function () {
+                        console.log("reader result " + reader.result);
+                        var base64data = reader.result;
+                       // console.log(base64data);
+                        $('#hospital_image').val(base64data);
+                    }
+
+                }
+                reader.readAsDataURL(file);
+            }
+
+
+
+        }
+
+        function addHospital() {
+            HospitalForm("Add", 0);
+        }
+
+        function EditHospital(e) {
+            var ID = $(e).attr('data-ID');
+            HospitalForm("Edit", ID);
+        }
+
+        function HospitalForm(FormType, ID) {
+            $.ajax({
+                cache: false,
+                url: '@Url.Action("_HospitalForm", "Hospital")',
+                data: { FormType: FormType, ID: ID },
+                beforeSend: function () {
+
+                },
+                success: function (myData) {
+                    $('#Hospital').empty().append(myData);
+                },
+                complete: function () {
+                  
+                    $('#myModal').modal('show');
+                    bindStateDD();
+
+                    $('#HospitalForm').submit(function (e) {
+                        e.preventDefault();
+                       $.ajax({
+                           cache: false,
+                            url: '@Url.Action("UpsertHospital", "Hospital")',
+                            type: "Post",
+                            data: $(this).serialize(),
+                            beforeSend: function () {
+                                $('.btn').prop("disabled", true);
+                            },
+                            success: function (myData) {
+                               
+                            },
+                            complete: function () {
+                                $('#myModal').modal('hide');
+                                $('.btn').prop("disabled", false);
+                                LoadMainList();
+                            }
+                        });
+
+
+                        });
+
+
+                }
+
+
+            });
+
+        }
+
+
+        function bindStateDD() {
+            $.ajax({
+                cache: false,
+                url: '@Url.Action("GetState", "Hospital")',
+
+                beforeSend: function () {
+
+                },
+                success: function (result) {                 
+                    //$('#DD_state').empty();
+                    //$('#DD_state').append('<option value="0">-------Select State-------</option>');
+                    for (var i = 0; i < result.length; i++) {
+                        $('#DD_state').append('<option value="' + result[i].StateDivision + '">' + result[i].StateDivision + '</option>')
+                    };
+                    
+                    var existingval = $('#state').val();
+                    $('#DD_state').val(existingval);
+                    if (existingval != "") {
+                        bindTownShipDD(existingval);
+                        $('#DD_state').on('change', function () {
+                            state = $('#DD_state :selected').text();
+                            // $('#DD_state').val(state);
+                            bindTownShipDD(state);
+                        });
+                    } else {
+                        $('#DD_state').on('change', function () {
+                            state = $('#DD_state :selected').text();
+                            // $('#DD_state').val(state);
+                            bindTownShipDD(state);
+                        });
+                    }
+                    
+
+                    //$('#DD_state').on('change', function () {
+                    //    bindTownShipDD($(this).val());
+                    //})
+                },
+                complete: function () {
+                }
+            });
+        }
+
+
+        function bindTownShipDD(state) {
+            $.ajax({
+                cache: false,
+                url: '@Url.Action("GetTownShip", "Hospital")',
+                data: { state: state },
+                beforeSend: function () {
+
+                },
+                success: function (result) {
+                      $('#DD_township').empty();
+                      $('#DD_township').append('<option value="">Select Township</option>');
+                    for (var i = 0; i < result.length; i++) {
+                        $('#DD_township').append('<option value="' + result[i] + '">' + result[i] + '</option>')
+                    };
+                    var existingtownship = $('#township').val();
+                    $('#DD_township').val(existingtownship);
+                    $('#DD_township').on('change', function () {
+                        township = $('#DD_township :selected').text();
+                        $('#DD_township').val(township);
+                    });
+
+                 
+                },
+                complete: function () {
+                }
+            });
+        }
+
+        function maxwidthheight(width, height) {
+            var MAX_WIDTH = 1200;  // to remove maximum width height
+            var MAX_HEIGHT = 1200;
+            var width = width;
+            var height = height;
+
+            if (width > height) {
+                if (width > MAX_WIDTH) {
+                    height *= MAX_WIDTH / width;
+                    width = MAX_WIDTH;
+                }
+            } else {
+                if (height > MAX_HEIGHT) {
+                    width *= MAX_HEIGHT / height;
+                    height = MAX_HEIGHT;
+                }
+            }
+            var a = { width: width, height: height };
+            return a
+        }
+
+        function dataURItoBlob(dataURI) {
+            var binary = atob(dataURI.split(',')[1]);
+            var array = [];
+            for (var i = 0; i < binary.length; i++) {
+                array.push(binary.charCodeAt(i));
+            }
+            return new Blob([new Uint8Array(array)], { type: 'image/png' });
+        }
+
+      
+
+        function deleteconfirmation(e) {
+            var modal = $('#modal_delete');
+            var btn_delete = $('#btn_delete');
+            btn_delete.data('action', $(e).attr('data-action'));
+            btn_delete.data('modal-id', $(e).attr('data-modalid'));
+            btn_delete.data('id', $(e).attr('data-id'));
+            btn_delete.data('info-id', $(e).attr('data-infoid'));
+            modal.modal('show');
+
+        }
+        function deleteEntity(e) {
+            var id = $(e).data('id');
+            var action = $(e).data('action');
+            var modalid = $(e).data('modal-id');
+            var infoid = $(e).data('info-id');
+            $.ajax({
+                url: action,
+                type: 'GET',
+                data: { ID: id },
+                beforeSend: function () {
+                    $('.btn').prop('disabled', true);
+                },
+                success: function (response) {
+                    if (response == "Success") {
+                        console.log(infoid);
+                        $('#' + infoid).remove();
+                        $('#' + modalid).modal('hide');
+                    }
+                    else {
+
+                    }
+                    $('.btn').prop('disabled', false);
+                }
+
+            });
+        }
+
+
+    
+    </script>
+}
+
+
+
+
+

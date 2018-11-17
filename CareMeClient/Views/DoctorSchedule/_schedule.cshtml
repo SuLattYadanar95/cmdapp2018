@@ -1,0 +1,87 @@
+﻿@model Data.Models.tbSchedule
+
+
+
+<div id="update_schedule_@Model.ID">
+    <div class="mt-20">
+        <div class="round">
+            <img src="~/Content/Image/calendar (1).png" style="width:25px;height:25px;" /><span class="lh15 text-muted ml-10" style="color:#080000;">DAY : </span>
+            @if (Model.IsSunday == true)
+            {
+                <input type="checkbox" class="round ml-5" checked /><label for="checkbox7">S</label>
+            }
+            else
+            {
+                <input type="checkbox" class="round ml-5" /><label for="checkbox7">S</label>
+            }
+            @if (Model.IsMonday == true)
+            {
+                <input type="checkbox" class="round" style="margin-left:11.5px" checked /><label for="checkbox1">M</label>
+            }
+            else
+            {
+                <input type="checkbox" class="round" style="margin-left:11.5px" /><label for="checkbox1">M</label>
+            }
+            @if (Model.IsTuesday == true)
+            {
+                <input type="checkbox" class="round" style="margin-left:11.5px" checked /><label for="checkbox2">T</label>
+            }
+            else
+            {
+                <input type="checkbox" class="round" style="margin-left:11.5px" /><label for="checkbox2">T</label>
+            }
+            @if (Model.IsWednesday == true)
+            {
+                <input type="checkbox" class="round" style="margin-left:11.5px" checked /><label for="checkbox3">W</label>
+            }
+            else
+            {
+                <input type="checkbox" class="round" style="margin-left:11.5px" /><label for="checkbox3">W</label>
+            }
+            @if (Model.IsThursday == true)
+            {
+                <input type="checkbox" class="round" style="margin-left:11.5px" checked /><label for="checkbox4">T</label>
+            }
+            else
+            {
+                <input type="checkbox" class="round" style="margin-left:11.5px" /><label for="checkbox4">T</label>
+            }
+            @if (Model.IsFriday == true)
+            {
+                <input type="checkbox" class="round" style="margin-left:11.5px" checked /><label for="checkbox5">F</label>
+            }
+            else
+            {
+                <input type="checkbox" class="round" style="margin-left:11.5px" /><label for="checkbox5">F</label>
+            }
+            @if (Model.IsSaturday == true)
+            {
+                <input type="checkbox" class="round" style="margin-left:11.5px" checked /><label for="checkbox6">S</label>
+            }
+            else
+            {
+                <input type="checkbox" class="round" style="margin-left:11.5px" /><label for="checkbox6">S</label>
+            }
+            <span class="lh15" style="margin-left:14px">From </span>
+            <span class="badge badge-success" style="font-size:14px">
+                @Model.Fromtime.Value.ToShortTimeString()
+            </span><span class="lh15" style="margin-left:22px">To </span>
+            <span class="badge badge-success" style="font-size:14px">
+                @Model.Totime.Value.ToShortTimeString()
+            </span>
+            <div class="" style="float:right">
+                <button class="btn btn-primary btn-xs btn-rounded"
+                        data-doctorid="@Model.DoctorID"
+                        data-hospitalid="@Model.HospitalID"
+                        data-doctorname="@Model.DoctorName"
+                        data-hospitalname="@Model.HospitalName"
+                        data-scheduleID="@Model.ID"
+                        onclick="editSchedule2(this)">
+                    Update
+                </button>&nbsp;
+                <button class="btn btn-danger btn-xs btn-rounded" data-id="@Model.ID" onclick="deleteSchedule(this)">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
+

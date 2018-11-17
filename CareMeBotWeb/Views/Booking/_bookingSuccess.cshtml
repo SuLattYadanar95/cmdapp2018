@@ -1,0 +1,42 @@
+﻿@model Data.ViewModels.BookingSuccessModel
+
+
+
+
+<div class="text-center pa-0">
+    <h2 class="zawgyi_text">@Model.hospital.Name_ZG</h2>
+    <img width="60" height="60" class="img-circle" src="https://kktstroage.azureedge.net/yammo/careme/default_doctor_photo.jpg" />
+    <h4 class="mb-0 zawgyi_text">@Model.doctor.doctor.Name_ZG</h4>
+    <span>@Model.doctor.doctor.Qualification</span>
+    <br /><br />
+    <div class="circle-loader load-complete p-10">
+        <h5 class="lh15 ">@Model.pavm.appointment.AppointmentDateTime.Value.ToShortTimeString()</h5>
+        <h4 class="lh15 ">@Model.pavm.appointment.AppointmentDateTime.Value.ToString("dd MMM yyyy")</h4>
+        <hr class="m-5" />
+        <h6 class="lh10">Booking No</h6>
+        <h2 class="lh10 text-bold">@Model.pavm.appointment.Counter</h2>
+    </div>
+
+    <h5 class="lh15">Active</h5>
+    <h5 class="lh20">2:hr 40:mins approximately to see doctor</h5>
+    @if (@Model.scheduleData.ReachedPatientCount > 0)
+    {
+        <h4 class="lh15"><span class="text-primary-300">@Model.scheduleData.ReachedPatientCount has</span> been called</h4>
+
+    }
+    else
+    {
+        <h4 class="lh15"><span class="text-primary-300">0 has</span> been called</h4>
+
+    }
+
+    
+    <hr />
+    <h5>Important Note</h5>
+    <h6>
+        Time mentioned above is estimated based on schedule set by doctor and updated in realtime
+        please note that it may be changed for some reasons and we suggest you to come to hospital ??? ahead
+    </h6>
+
+    <button onclick="cancelBooking()" class="btn btn-primary btn-rounded">Book Another</button>
+</div>

@@ -1,0 +1,18 @@
+﻿@model IEnumerable<Data.Models.tbScheduleData>
+
+@foreach (var item in Model)
+{
+    <div class="icheckbox" style="margin-right:3px">
+        <input style="display:none" id="seat-checkbox_@item.AppointmentDatetime" type="radio"
+                data-datetime="@item.AppointmentDatetime"
+               onchange="btntime(this)"
+               class="hide-checkbox setdate-radio"
+               name="SetDate1">
+        <label for="seat-checkbox_@item.AppointmentDatetime">
+           @item.Fromtime.Value.ToShortTimeString() - @item.Totime.Value.ToShortTimeString()
+        </label>
+    </div>
+}
+
+
+

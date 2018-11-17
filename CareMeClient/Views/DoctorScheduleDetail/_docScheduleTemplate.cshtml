@@ -1,0 +1,119 @@
+﻿@model List<Data.Models.tbSchedule>
+
+<table class="table table-bordered">
+    <thead>
+        <tr class="round">
+            <th>
+                <input type="checkbox"/>
+                <label for="checkbox7">S</label>
+            </th>
+            <th>
+                <input type="checkbox"/>
+                <label for="checkbox1">M</label>
+            </th>
+            <th>
+                <input type="checkbox"/>
+                <label for="checkbox2">T</label>
+            </th>
+            <th>
+                <input type="checkbox"/>
+                <label for="checkbox3">W</label>
+            </th>
+            <th>
+                <input type="checkbox"/>
+                <label for="checkbox4">T</label>
+            </th>
+            <th>
+                <input type="checkbox" />
+                <label for="checkbox5">F</label>
+            </th>
+            <th>
+                <input type="checkbox" />
+                <label for="checkbox6">S</label>
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+
+        @{
+
+            if (Model.Count > 0)
+            {
+                foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @if (item.IsSunday == true)
+                            {
+                                <span>@item.Fromtime.Value.ToShortTimeString()</span>
+                                <span><br/></span>
+                                <span>@item.Totime.Value.ToShortTimeString()</span>
+                            }
+                        </td>
+                        <td>
+                            @if (item.IsMonday == true)
+                            {
+                                <span>@item.Fromtime.Value.ToShortTimeString()</span>
+                                <span><br/></span>
+                                <span>@item.Totime.Value.ToShortTimeString()</span>
+                            }
+                        </td>
+                        <td>
+                            @if (item.IsTuesday == true)
+                            {
+                                <span>@item.Fromtime.Value.ToShortTimeString()</span>
+                                <span><br/></span>
+                                <span>@item.Totime.Value.ToShortTimeString()</span>
+                            }
+                        </td>
+                        <td>
+                            @if (item.IsWednesday == true)
+                            {
+                                <span>@item.Fromtime.Value.ToShortTimeString()</span>
+                                <span><br/></span>
+                                <span>@item.Totime.Value.ToShortTimeString()</span>
+                            }
+                        </td>
+                        <td>
+                            @if (item.IsThursday == true)
+                            {
+                                <span>@item.Fromtime.Value.ToShortTimeString()</span>
+                                <span><br/></span>
+                                <span>@item.Totime.Value.ToShortTimeString()</span>
+                            }
+                        </td>
+                        <td>
+                            @if (item.IsFriday == true)
+                            {
+                                <span>@item.Fromtime.Value.ToShortTimeString()</span>
+                                <span><br/></span>
+                                <span>@item.Totime.Value.ToShortTimeString()</span>
+                            }
+                        </td>
+                        <td>
+                            @if (item.IsSaturday == true)
+                            {
+                                <span>@item.Fromtime.Value.ToShortTimeString()</span>
+                                <span><br/></span>
+                                <span>@item.Totime.Value.ToShortTimeString()</span>
+                            }
+                        </td>
+                    </tr>
+
+
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="7" style="text-align:center">No generate schedule list</td>
+                </tr>
+            }
+
+
+
+        }
+
+
+    </tbody>
+</table>

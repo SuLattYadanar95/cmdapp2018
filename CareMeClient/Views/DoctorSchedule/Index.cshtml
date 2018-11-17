@@ -1,0 +1,619 @@
+﻿@model Data.ViewModels.DoctorSpecialitiesViewModel
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<style>
+   /*.round {
+      position: relative;
+    }*/
+  
+
+</style>
+
+
+<div class="mt-20">
+    <div class="navbar  navbar-component fs14" style="position: relative; z-index: 18;margin-bottom:0px!important">
+        <div class="col-md-3 pa-0 " style="float:left">
+            <h3 class="lh10 mt-5">Available Doctors</h3>
+            <small>Manage doctors and schedules template</small>
+            <button class="btn btn-success btn-xs btn-rounded" onclick="addDoctor()">Add New Doctor</button>
+        </div>
+        
+    
+
+        <div class="col-md-3" style="float:right">
+            <div class="form-group">
+                <div class="input-group">
+                    <input type="text" class="form-control zawgyi_text" placeholder="Search for..." name="q" id="txt_doctorName" autocomplete="off">                  
+                    <span class="input-group-btn">
+                        <button class="btn btn-default pull-right" style="margin-left:5px;border-radius:7px" type="button" onclick="Search()">Go!</button>
+                    </span>
+                </div><!-- /input-group -->
+
+            </div>
+        </div>
+
+        <div class="col-md-3" style="float:right">
+
+           
+                <select name="specialtyID" id="DD_Specialty" class="form-control zawgyi_text">
+                    <option value="0">Specialty</option>
+                    @foreach (var specialty in Model.specialities)
+                    {
+                        <option value="@specialty.ID">@specialty.Specialty</option>
+                    }
+                </select>
+            
+        </div>
+
+            
+        </div>
+</div>
+
+
+
+<div class="modal fade" id="myModal1" tabindex="-1" role="dialog" aria-labelledby="myModal-label" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div id="Doctor">
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="modal fade" id="myModalSchedule2" tabindex="-1" role="dialog" aria-labelledby="myModal-label" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div id="Schedule2">
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div id="modal_delete" class="modal fade in" style="display: none; padding-right: 17px;">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">×</button>
+                <h5 class="modal-title" id="delete_title_info">Delete Confirmation</h5>
+            </div>
+
+            <div class="modal-body">
+                <h6 class="text-semibold" id="delete_body_title_info">Are you sure to delete?</h6>
+                <p id="delete_body_info">If you are sure to delete this, click 'Delete' and note that it is irreversible in action.</p>
+
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default btn-rounded legitRipple" data-dismiss="modal">Close</button>
+                <button type="button" id="btn_delete" onclick="deleteEntity(this)" data-action="" data-id="" data-info-id="" data-modal-id="" class="btn btn-primary btn-rounded legitRipple">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@*@Html.Partial("_doctorScheduleList");*@
+
+<div id="div_List">
+    <div id="loading" style="text-align:center">
+        <img src="~/Content/Image/Spinner-1s-200px.gif" width="200" height="200" />
+    </div>
+</div>
+
+@section scripts{
+    <script type="text/javascript">
+        var page = 1;
+        var pagesize = 10;
+        var doctorid;
+        var doctorname;
+        var hospitalid;
+        var hospitalname;
+        var datetime;
+        var specialtyid;
+        var specialtyname;
+        $(function () {
+            LoadMainList();
+            initPaging();
+            initComponents();
+
+        });
+
+        //$(function () {
+        //    $('#dtpickerdemo').datetimepicker({
+        //        format: 'YYYY-MM-DD HH:mm A'
+        //    });
+        //    $('#dtpickerdemo').on('dp.change', function () {
+        //        console.log("haha" + $("#pickerdemo").val());
+        //        datetime = $("#pickerdemo").val();
+        //        Search();
+        //    });
+
+        //});
+
+
+        function initPaging() {
+            $("#div_List").on("click", ".pagedList a", function (e) {
+                e.preventDefault();
+                var $a = $(this).attr("href");
+                try {
+                    var pageurl = $a.split(/=/);
+                    page = pageurl[1];
+                    if (page == null) {
+                        page = 1;
+                    }
+                }
+                catch (e) {
+                    page = 1;
+                }
+                LoadMainList();
+            });
+        }
+
+
+        function initComponents() {
+            $('#DD_Specialty').on('change', function () {
+                Search();
+            });
+
+
+        }
+
+
+
+                function Search() {
+                    doctorname = $('#txt_doctorName').val();
+                    specialtyid = $('#DD_Specialty').val();
+                    LoadMainList();
+                }
+
+        function LoadMainList() {
+            hospitalid = @CareMeClient.Helper.CookieHelper.getstaffHospitalID();
+            $('#loading').show();
+            $.ajax({
+                cache: false,
+                url: '@Url.Action("_doctorScheduleList", "DoctorSchedule")',
+                data: { doctorname: doctorname, hospitalname: hospitalname, pagesize: pagesize, page: page,doctorid:doctorid,specialtyid : specialtyid,hospitalid : hospitalid},
+                beforeSend: function () {
+
+                },
+                success: function (result) {
+                    $('#div_List').empty().append(result);
+                },
+                complete: function () {
+                    $('#loading').hide();
+                }
+            });
+        }
+
+
+
+
+        function Schedule(e) {
+            var doctorid = $(e).attr('data-doctorID');
+            var hospitalname = $(e).attr('data-hospitalname');
+            var hospitalid = $(e).attr('data-hospitalid');
+            var doctorname = $(e).attr('data-doctorname');
+            $("#div_scheduleby_"+doctorid).toggle();
+            $.ajax({
+                cache: false,
+                url: '@Url.Action("_scheduleListbyDoctorID", "DoctorSchedule")',
+                data: { doctorid: doctorid,doctorname:doctorname,hospitalid:hospitalid, hospitalname: hospitalname },
+                beforeSend: function () {
+
+                },
+                success: function (result) {
+                    //  $("#div_scheduleby_"+doctorid).empty().append(result);
+                  //  $("#div_schedulebyone_" + doctorid).empty().append('<div class="mt-20"><img src="/Content/Image/hospital1.png" style="width:25px;height:25px;" /><span class="lh10 text-muted ml-10">HOSPITAL OR CLINIC NAME : <Label class="lh15 zawgyi_text" style="color:#080000">' + hospitalname + '</Label></span><button class="btn btn-success btn-xs btn-rounded pull-right" data-doctorid="' + doctorid + '" data-hospitalid="' + hospitalid + '" data-doctorname="' + doctorname + '" data-hospitalname="' + hospitalname + '" onclick="addSchedule2(this)">Add New Schedule</button></div><hr />');
+                    $("#schedule_" + doctorid).empty().append(result);
+                },
+                complete: function () {
+                }
+            });
+
+            }
+
+
+
+        //function ShowImagePreview(imageUploader, previewImage) {
+        //    if (imageUploader.files && imageUploader.files[0]) {
+        //        var files = $("#filedata2").get(0).files;
+        //        var file = files[0];
+        //        var img = document.createElement("img");
+        //        var reader = new FileReader();
+        //        reader.readAsDataURL(files[0]);
+        //        reader.onload = function () {
+        //            var basestring = reader.result;
+        //            console.log("base64" + basestring);
+        //            //$('#image').val(reader.result);
+        //            //  $('#image').val(basestring);
+        //            $('#photo_image').val(basestring);
+        //            console.log("kkkkkkk" + $('#photo_image').val(basestring));
+        //        };
+        //        reader.onerror = function (error) {
+        //            console.log('Error: ', error);
+        //        };
+        //    }
+
+
+
+        //}
+
+        function ShowImagePreview(imageUploader, previewImage) {
+            if (imageUploader.files && imageUploader.files[0]) {
+                var files = $("#filedata2").get(0).files;
+                var file = files[0];
+
+                var img = document.createElement("img");
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    $(previewImage).attr('src', e.target.result);
+                    img.src = e.target.result;
+                    var mime_type = "image/jpeg";
+                    if (typeof output_format !== "undefined" && output_format == "png") {
+                        mime_type = "image/png";
+                    }
+                    var canvas = document.createElement("canvas");
+                    if (navigator.userAgent.toLowerCase().indexOf('firefox') > -1) {
+                        alert('Photo is uploading...');
+                    }
+                    //set max height width
+                    var gg = maxwidthheight(img.width, img.height);
+                    width = gg.width;
+                    height = gg.height;
+                    canvas.width = width;
+                    canvas.height = height;
+                    var ctx = canvas.getContext("2d");
+                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                    var dataurl = canvas.toDataURL(mime_type, 60 / 100);
+                    //document.getElementById('image').src = dataurl;
+                    var blob = dataURItoBlob(dataurl);
+                    console.log("blob" + dataurl);
+
+                    reader.onloadend = function () {
+                        console.log("reader result " + reader.result);
+                        var base64data = reader.result;
+                       // console.log(base64data);
+                        $('#photo_image').val(base64data);
+                    }
+
+                }
+                reader.readAsDataURL(file);
+            }
+
+
+
+        }
+
+        function addDoctor() {
+            DoctorForm("Add", 0);
+        }
+
+        function EditDoctor(e) {
+            var ID = $(e).attr('data-ID');
+            DoctorForm("Edit", ID);
+        }
+
+        function DoctorForm(FormType, ID) {
+            $.ajax({
+                cache: false,
+                url: '@Url.Action("_DoctorForm", "DoctorSchedule")',
+                data: { FormType: FormType, ID: ID },
+                beforeSend: function () {
+
+                },
+                success: function (myData) {
+                    $('#Doctor').empty().append(myData);
+                },
+                complete: function () {
+                    $('#myModal1').modal('show');
+                    bindSpecialityDD();
+
+                    $('#DoctorForm').submit(function (e) {
+                        e.preventDefault();
+                       $.ajax({
+                           cache: false,
+                            url: '@Url.Action("UpsertDoctor", "DoctorSchedule")',
+                            type: "Post",
+                            data: $(this).serialize(),
+                            beforeSend: function () {
+                                $('.btn').prop("disabled", true);
+                            },
+                            success: function (myData) {
+                                $('#myModal1').modal('hide');
+                            },
+                            complete: function () {
+                                $('.btn').prop("disabled", false);
+                                LoadMainList();
+                            }
+                        });
+
+
+                        });
+
+
+                }
+
+
+            });
+
+        }
+
+
+
+
+        function maxwidthheight(width, height) {
+            var MAX_WIDTH = 1200;  // to remove maximum width height
+            var MAX_HEIGHT = 1200;
+            var width = width;
+            var height = height;
+
+            if (width > height) {
+                if (width > MAX_WIDTH) {
+                    height *= MAX_WIDTH / width;
+                    width = MAX_WIDTH;
+                }
+            } else {
+                if (height > MAX_HEIGHT) {
+                    width *= MAX_HEIGHT / height;
+                    height = MAX_HEIGHT;
+                }
+            }
+            var a = { width: width, height: height };
+            return a
+        }
+
+        function dataURItoBlob(dataURI) {
+            var binary = atob(dataURI.split(',')[1]);
+            var array = [];
+            for (var i = 0; i < binary.length; i++) {
+                array.push(binary.charCodeAt(i));
+            }
+            return new Blob([new Uint8Array(array)], { type: 'image/png' });
+        }
+
+        function bindSpecialityDD() {
+            $.ajax({
+                cache: false,
+                url: '@Url.Action("getSpecialityList", "DoctorSchedule")',
+
+                beforeSend: function () {
+
+                },
+                success: function (result) {
+                    $('#DD_specialty').empty();
+                    $('#DD_specialty').append('<option value="0">-------Select-------</option>');
+                    for (var i = 0; i < result.length; i++) {
+                        $('#DD_specialty').append('<option value="' + result[i].ID + '">' + result[i].Specialty + '</option>')
+                    };
+                    var existingval = $('#specialtyID').val();
+                    $('#DD_specialty').val(existingval);
+                    $('#DD_specialty').on('change', function () {
+                        $('#specialty').val($('#DD_specialty :selected').text());
+                    });
+                    //var catname = $('#DD_category :selected').text();
+                    //$('#CategoryName').val(catname);
+                    //catName = catname;
+                   // bindSubCatDD(existingval);
+
+                    //$('#DD_category').on('change', function () {
+                    //    bindSubCatDD($(this).val());
+                    //})
+
+                },
+                complete: function () {
+                }
+            });
+        }
+
+
+
+
+
+
+
+        function addSchedule2(e) {
+            var docid = $(e).attr('data-doctorid');
+            var hosid = $(e).attr('data-hospitalid');
+            var docname = $(e).attr('data-doctorname');
+            var hosname = $(e).attr('data-hospitalname');
+            //  ScheduleForm2("Add", 0);
+            ScheduleForm2("Add", 0, docname, hosname, docid, hosid);
+        }
+
+
+
+        function editSchedule2(e) {
+            var docid = $(e).attr('data-doctorid');
+            var hosid = $(e).attr('data-hospitalid');
+            var docname = $(e).attr('data-doctorname');
+            var hosname = $(e).attr('data-hospitalname');
+            var ID = $(e).attr('data-scheduleid');
+            // ScheduleForm2("Edit", ID);
+            ScheduleForm2("Edit", ID, docname, hosname, docid, hosid);
+        }
+
+        function ScheduleForm2(FormType, ID, docname, hosname, docid, hosid) {
+            $.ajax({
+                cache: false,
+                url: '@Url.Action("_ScheduleForm2", "DoctorSchedule")',
+                data: { FormType: FormType, ID: ID, docname: docname, hosname: hosname, docid: docid, hosid: hosid },
+                beforeSend: function () {
+
+                },
+                success: function (myData) {
+                    $('#Schedule2').empty().append(myData);
+                },
+                complete: function () {
+                    $('#myModalSchedule2').modal('show');
+
+
+                    $('#timepicker1').ptTimeSelect();
+
+                    $('#timepicker2').ptTimeSelect();
+                   
+                    $('#ScheduleForm2').submit(function (e) {
+                        //var datepicker = $('#datepicker').val();
+                        //var timepicker1 = $('#timepicker1').val();
+                        //var timepicker2 = $('#timepicker2').val();
+                        var doctorid = $('#doctorid').val();
+                        //var doctorname = $('#doctorname').val();
+                        //var hospitalid = $('#hospitalid').val();
+                        //var hospitalname = $('#hospitalname').val();
+                        e.preventDefault();
+                        $.ajax({
+                            cache: false,
+                            url: '@Url.Action("UpSertSchedule2", "DoctorSchedule")',
+                            type: "Post",
+                            data: $(this).serialize(),
+                         //   data: { datepicker: datepicker, timepicker1: timepicker1, timepicker2: timepicker2, doctorid: doctorid, doctorname: doctorname, hospitalid: hospitalid, hospitalname: hospitalname },
+                            beforeSend: function () {
+                                $('.btn').prop("disabled", true);
+                            },
+                            success: function (result) {
+                                //var elements = '<div id="update_schedule_'+result.ID+'"><div class="mt-20"><div class="round"><img src="/Content/Image/calendar (1).png" style="width:25px;height:25px;" /><span class="lh15 text-muted ml-10" style="color:#080000;">DAY : </span>';
+                                //if(result.IsSunday == true){
+                                //    elements += '<input type="checkbox" class="round ml-5" checked /><label for="checkbox7">S</label>';
+                                //}else{
+                                //    elements += '<input type="checkbox" class="round ml-5"/><label for="checkbox7">S</label>';
+                                //}
+                                //if (result.IsMonday == true) {
+                                //    elements += '<input type="checkbox" class="round" style="margin-left:11.5px"  checked /><label for="checkbox1">M</label>';
+                                //} else {
+                                //    elements += '<input type="checkbox" class="round" style="margin-left:11.5px"  /><label for="checkbox1">M</label>';
+                                //}
+                                //if (result.IsTuesday == true) {
+                                //    elements += '<input type="checkbox" class="round" style="margin-left:11.5px" checked /><label for="checkbox2">T</label>';
+                                //} else {
+                                //    elements += '<input type="checkbox" class="round" style="margin-left:11.5px"  /><label for="checkbox2">T</label>';
+                                //}
+                                //if (result.IsWednesday == true) {
+                                //    elements += '<input type="checkbox" class="round" style="margin-left:11.5px"  checked /><label for="checkbox3">W</label>';
+                                //} else {
+                                //    elements += '<input type="checkbox" class="round" style="margin-left:11.5px" /><label for="checkbox3">W</label>';
+                                //}
+                                //if (result.IsThursday == true) {
+                                //    elements += '<input type="checkbox" class="round" style="margin-left:11.5px" checked /><label for="checkbox4">T</label>';
+                                //} else {
+                                //    elements += '<input type="checkbox" class="round" style="margin-left:11.5px"  /><label for="checkbox4">T</label>';
+                                //}
+                                //if (result.IsFriday == true) {
+                                //    elements += '<input type="checkbox" class="round" style="margin-left:11.5px"  checked /><label for="checkbox5">F</label>';
+                                //} else {
+                                //    elements += '<input type="checkbox" class="round" style="margin-left:11.5px"/><label for="checkbox5">F</label>';
+                                //}
+                                //if (result.IsSaturday == true) {
+                                //    elements += '<input type="checkbox" class="round" style="margin-left:11.5px" checked /><label for="checkbox6">S</label>';
+                                //} else {
+                                //    elements += '<input type="checkbox" class="round" style="margin-left:11.5px" /><label for="checkbox6">S</label>';
+                                //}
+                                //elements += '<span class="lh15"  style="margin-left:14px">From </span><span class="badge badge-success" style="font-size:14px">'+ moment(result.Fromtime).format("LT")+'</span><span class="lh15" style="margin-left:22px">To </span><span class="badge badge-success" style="font-size:14px">'+ moment(result.Totime).format("LT")+'</span><div class="" style="float:right"><button class="btn btn-primary btn-xs btn-rounded" data-doctorid="' + result.DoctorID + '" data-hospitalid="' + result.HospitalID + '" data-doctorname="' + result.DoctorName + '" data-hospitalname="' + result.HospitalName + '" data-scheduleID="' + result.ID + '" onclick="editSchedule2(this)">Update</button>&nbsp;<button class="btn btn-danger btn-xs btn-rounded" data-id="' + result.ID + '" onclick="deleteSchedule(this)">Delete</button></div></div></div>';
+
+
+
+                                if (FormType == "Add") {
+                                //    $("#div_scheduleby_" + result.DoctorID).empty().append(elements);
+                                    $('#schedule_' +docid).empty().append(result);
+                                }
+                                else {
+
+                                    $("#update_schedule_" + ID).replaceWith(result);
+                                }
+
+                                $('#myModalSchedule2').modal('hide');
+                              //  $('#schedule_' + doctorid).empty().append('<div class="mt-20"><div class="round"><img src="~/Content/Image/calendar (1).png" style="width:25px;height:25px;" /><span class="lh15 text-muted ml-10" style="color:#080000">DAY : </span>'+{if(result.IsSunday == true)+'{<input type="checkbox" id="checkbox7" checked /><label for="checkbox7">S</label>}else{<input type="checkbox" id="checkbox7"/><label for="checkbox7">S</label>}if (${result.IsMonday} == true){<input type="checkbox" class="round ml-5" id="checkbox1" checked /><label for="checkbox1">M</label>}else{<input type="checkbox" class="round ml-5" id="checkbox1" /><label for="checkbox1">M</label>}if (${result.IsTuesday} == true){<input type="checkbox" class="round ml-5" id="checkbox2" checked /><label for="checkbox2">T</label>}else{<input type="checkbox" class="round ml-5" id="checkbox2" /><label for="checkbox2">T</label>}if(${result.IsWednesday} == true){<input type="checkbox" class="round ml-5" id="checkbox3" checked /><label for="checkbox3">W</label>}else{<input type="checkbox" class="round ml-5" id="checkbox3" /><label for="checkbox3">W</label>}if(${result.IsThursday} == true){<input type="checkbox" class="round ml-5" id="checkbox4" checked /><label for="checkbox4">T</label>}else{<input type="checkbox" class="round ml-5" id="checkbox4" /><label for="checkbox4">T</label>}if(${result.IsFriday} == true){<input type="checkbox" class="round ml-5" id="checkbox5" checked /><label for="checkbox5">F</label>}else{<input type="checkbox" class="round ml-5" id="checkbox5" /><label for="checkbox5">F</label>}if(${result.IsSaturday} == true){<input type="checkbox" class="round ml-5" id="checkbox6" checked /><label for="checkbox6">S</label> }else{<input type="checkbox" class="round ml-5" id="checkbox6" /><label for="checkbox6">S</label>}<button class="btn btn-primary btn-xs btn-rounded" data-doctorid="${result.DoctorID}" data-hospitalid="${result.HospitalID}" data-doctorname="${result.DoctorName}" data-hospitalname="${result.HospitalName}" data-scheduleID="${result.ID}" onclick="editSchedule2(this)">Update</button>&nbsp;<button class="btn btn-danger btn-xs btn-rounded" onclick="deleteSchedule()">Delete</button></div></div><hr /><div class="mt-20 mb-20"><img src="~/Content/Image/time2.png" style="width:30px;height:30px;float:left" /><span class="lh15 ml-10" style="float:left">From Time</span><input class='text-input ml-10' style="float:left" value="${result.Fromtime}" required type='text'><span class="lh15 ml-20" style="float:left">To Time</span><input class='text-input ml-10' style="float:left" value="${result.Totime}" required type='text'><label></label><label></label></div><hr class="mb-20" />');
+                            },
+                            complete: function (result) {
+                                $('.btn').prop("disabled", false);
+
+
+                            }
+                        });
+                    });
+
+                }
+
+
+
+
+
+            });
+
+        }
+
+
+        function deleteconfirmation(e) {
+            var modal = $('#modal_delete');
+            var btn_delete = $('#btn_delete');
+            btn_delete.data('action', $(e).attr('data-action'));
+            btn_delete.data('modal-id', $(e).attr('data-modalid'));
+            btn_delete.data('id', $(e).attr('data-id'));
+            btn_delete.data('info-id', $(e).attr('data-infoid'));
+            modal.modal('show');
+
+        }
+        function deleteEntity(e) {
+            var id = $(e).data('id');
+            var action = $(e).data('action');
+            var modalid = $(e).data('modal-id');
+            var infoid = $(e).data('info-id');
+            $.ajax({
+                url: action,
+                type: 'GET',
+                data: { ID: id },
+                beforeSend: function () {
+                    $('.btn').prop('disabled', true);
+                },
+                success: function (response) {
+                    if (response == "Success") {
+                        console.log(infoid);
+                        $('#' + infoid).remove();
+                        $('#' + modalid).modal('hide');
+                    }
+                    else {
+
+                    }
+                    $('.btn').prop('disabled', false);
+                }
+
+            });
+        }
+
+
+        function deleteSchedule(e) {
+            var ID = $(e).attr('data-id');
+            $.ajax({
+                cache: false,
+                url: '@Url.Action("scheduledelete", "DoctorSchedule")',
+                data: { ID: ID },
+                beforeSend: function () {
+
+                },
+                success: function (myData) {
+                    $('#schedule_' + ID).remove();
+                    $("#update_schedule_" + ID).remove();
+
+                },
+                complete: function () {
+
+                }
+
+
+
+
+
+            });
+
+        }
+    </script>
+}
+
+
+
+
+
